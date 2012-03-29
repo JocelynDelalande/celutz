@@ -1,0 +1,125 @@
+* {
+    padding:0;
+    margin:0;
+}
+
+body {
+    overflow:hidden;
+}
+
+#mon-canvas {
+    background-color:#44F;
+    margin:auto;
+    display:block;
+}
+
+#info {
+    display:none;
+    background-color:#FF0;
+    border:1px red solid;
+    position:absolute;
+    margin:1em;
+    padding:0.2em 0.5em;
+    border-radius:0.5em;
+}
+
+#insert {
+    display:none;
+    background-color:#F88;
+    border:1px red solid;
+    position:absolute;
+}
+
+label {
+    display:block;
+    clear:both;
+}
+
+legend {
+    opacity:1;
+    background-color:#F88;
+    border:solid #F00 1px;
+    border-radius:0.5em;
+    padding:0 1em;
+}      
+
+fieldset#control {
+    text-shadow:2px 2px 2px #000, -2px -2px 2px #000;
+    color:#FFF;
+    float:left;
+    position:absolute;
+    top:1em;
+    left:2em;
+    background-color:rgba(128,128,128,0.5);
+    border:solid #F00 1px;
+    border-radius:0.5em;
+    padding:0.2em 0.5em;
+}
+
+input {
+    vertical-align:middle;
+}
+input[type="number"] {
+    border-radius:1em;
+    display:block;
+    float:right;
+}
+
+#res>:not(ul), #control, #params, #info {
+    user-select:none;
+    -khtml-user-select:none;
+    -o-user-select:none;
+    -moz-user-select:-moz-none;
+    -webkit-user-select:none;
+}
+
+div#params {
+    padding:0.2em 0.5em;
+    border-radius:0.5em;
+    background-color:rgba(128,128,128,0.5);
+    border:solid #00F 1px;
+    position:absolute;
+    top:1em;
+    right:2em;
+    float:right;
+}
+
+div#params em {
+    display:block;
+    float:right;
+    background-color:#88F;
+    border-radius:0.5em;
+    padding:0 0.5em;
+    color:#FFF;
+}
+
+div#params em:nth-child[2] {
+    display:inline;
+}
+
+.validators {
+    text-align:center;
+    background-color:#CCC;
+    border:solid 1px #F55;
+    border-width:0 0 1px 0;
+    display:none;
+}
+
+#res {
+    padding:0.2em 0.4em;
+    color:#FF8;
+    position:absolute;
+    bottom:1em;
+    right:2em;
+    background-color:rgba(0,0,0,0.3);
+    border:solid #FFF 1px;
+}
+
+#res:empty {padding:0;}
+
+#res li {
+    list-style-type: none;
+    color:#FFF;
+    background-color:rgba(100,0,0,0.5);
+
+}
