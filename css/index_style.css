@@ -1,0 +1,137 @@
+	body
+	{
+		
+		background:#44F;
+		font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+		font-size:small;
+		margin:8px 0 16px;
+		text-align:center;
+		overflow:auto;
+		
+	}
+	
+	#top
+	{
+		display:block;
+		height:10px;
+		margin:10px auto 0;
+		width:650px;
+	}
+	
+	div#index_container
+	{
+		background:#fff;
+		
+		margin: auto;
+		text-align:left;
+		width:640px;
+	}
+	
+	div#index_container h2 {
+		margin:1.05em;
+		text-shadow: 0.1em 0.1em 0.15em #44F; 
+	}
+	#bottom
+	{
+		display:block;
+		height:10px;
+		margin:0 auto;
+		width:650px;
+	}
+	
+	h1
+	{
+		background-color:#6699CC;
+		margin:0;
+		min-height:0;
+		padding:0;
+		text-decoration:none;
+		text-align: center;
+		
+	}
+	
+	h1 a
+	{
+		
+		display:block;
+		height:100%;
+		min-height:40px;
+		
+	}
+	
+	h1 img
+	{
+		margin-top: 8px;
+	}
+	
+	img
+	{
+		/*behavior:url(css/iepngfix.htc);*/
+		border:none;
+	}
+	
+	div#containerList
+	{
+		margin:20px 20px 0;
+		padding:0 0 20px;
+	}
+	
+	#containerList
+	{
+		font-family:Lucida Grande, Tahoma, Arial, Verdana, sans-serif;
+		
+	}
+	
+	#containerList li
+	{
+		width:100%;
+		margin:1.05em;
+		font-size:14px;
+		
+	}
+	
+	div#containerList ul
+	{
+		font-size:100%;
+		list-style-type:circle;
+		margin:0;
+		padding:0;
+		width:100%;
+	}
+	
+	div#interaction {
+		background-color:#fff;
+		margin: auto;
+		width:640px;
+		border-top: 2px dotted #44F;
+	}
+	
+	div#interaction li{
+	
+		display:inline-block;
+		list-style-type:none;
+		margin:1.08em;
+	
+	}
+	
+	div#interaction li a{
+	
+	    color:#3F2DFF;
+	    text-decoration:none;
+	    font-size:16px;
+    }
+	 
+	div#interaction li a:hover {
+		color:#FF9900;
+		text-decoration:underline;
+	}
+	
+	
+	
+	p a {
+		background-color:#fff;
+		border-radius: 4px;
+		padding:3px;
+		text-shadow: 0.1em 0.05em 0.15em #444; 
+		font-size:11px;
+	}
