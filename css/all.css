@@ -41,7 +41,13 @@ legend {
     border:solid #F00 1px;
     border-radius:0.5em;
     padding:0 1em;
+    text-shadow:2px 2px 2px #000, -2px -2px 2px #000;
 }      
+
+legend:hover {
+    color:#FF0;
+    cursor:default;
+}
 
 fieldset#control {
     text-shadow:2px 2px 2px #000, -2px -2px 2px #000;
@@ -59,13 +65,19 @@ fieldset#control {
 input {
     vertical-align:middle;
 }
+
+
 input[type="number"] {
     border-radius:1em;
     display:block;
     float:right;
 }
 
-#res>:not(ul), #control, #params, #info {
+#locadraw input[type="number"] {
+    width:10ex;
+}
+
+#res>:not(ul), #control, #params, #info ,#addParams ,#adding, #loca{
     user-select:none;
     -khtml-user-select:none;
     -o-user-select:none;
@@ -74,7 +86,7 @@ input[type="number"] {
 }
 
 div#params {
-    padding:0.2em 0.5em;
+    padding:0.2em 1.3em;
     border-radius:0.5em;
     background-color:rgba(128,128,128,0.5);
     border:solid #00F 1px;
@@ -85,6 +97,7 @@ div#params {
 }
 
 div#params em {
+	
     display:block;
     float:right;
     background-color:#88F;
@@ -95,6 +108,141 @@ div#params em {
 
 div#params em:nth-child[2] {
     display:inline;
+}
+
+span#loca{
+	text-shadow:2px 2px 2px #000, -2px -2px 2px #000;
+    color:#FFF;
+    float:left;
+    position:absolute;
+    bottom:1em;
+    left:1em;
+    cursor:pointer;
+    padding:0.2em 0.5em;
+    padding:0 1em; 
+}
+
+
+div#addParams  {
+	text-shadow:2px 2px 2px #000, -2px -2px 2px #000;
+    color:#FFF;
+    float:left;
+    position:absolute;
+    top:1em;
+    right:2em;
+    
+    border:solid #F00 1px;
+    border-radius:0.5em;
+    padding:0.2em 0.5em;
+    background-color:#F88; 
+    padding:0 1em; 
+   
+}
+
+div#addParams label {
+        
+    border-radius:0.5em;
+    padding:0 1em;
+}
+
+div#addParams label:hover {
+	 color: #FF0; 
+     
+}
+
+fieldset#locadraw {
+    
+    color:#FFF;
+    float:left;
+    position:absolute;
+    bottom:1em;
+    left:1em;
+    background-color:rgba(128,128,128,0.5);
+    border:solid #F00 1px;
+    border-radius:0.5em;
+    padding:0 1em;
+    visibility:hidden;
+}
+
+fieldset#adding {
+    
+    color:#FFF;
+    float:left;
+    position:absolute;
+    top:1em;
+    right:2em;
+    background-color:rgba(128,128,128,0.5);
+    border:solid #F00 1px;
+    border-radius:0.5em;
+    padding:0 1em;
+    visibility: hidden;
+}
+
+
+
+form#form_param label {
+	
+    margin-right: 15px;
+    width: 0.5em;
+    padding:0.3em 0.5em;
+    min-height: 1px;
+    text-align: left;
+    text-shadow:2px 2px 2px #000, -2px -2px 2px #000;
+}
+ 
+
+input:focus {
+  border-color: rgba(82, 168, 236, 0.75);
+  -moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5);
+  -webkit-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5);
+  box-shadow: 0 0 8px rgba(82, 168, 236, 0.5);
+}
+ 
+.correct {
+  border-color: rgba(68, 191, 68, 0.75);
+}
+ 
+.correct:focus {
+  border-color: rgba(68, 191, 68, 0.75);
+  -moz-box-shadow: 0 0 8px rgba(68, 191, 68, 0.5);
+  -webkit-box-shadow: 0 0 8px rgba(68, 191, 68, 0.5);
+  box-shadow: 0 0 8px rgba(68, 191, 68, 0.5);
+}
+ 
+.incorrect {
+  border-color: rgba(191, 68, 68, 0.75);
+}
+ 
+.incorrect:focus {
+  border-color: rgba(191, 68, 68, 0.75);
+  -moz-box-shadow: 0 0 8px rgba(191, 68, 68, 0.5);
+  -webkit-box-shadow: 0 0 8px rgba(191, 68, 68, 0.5);
+  box-shadow: 0 0 8px rgba(191, 68, 68, 0.5);
+} 
+
+/*p#chsignInfo {
+color:#F00;
+font-size: 12px;
+margin:1.02em 1em;
+background-color: #CCC;
+border-radius: 4px;
+padding:2px;
+}*/
+
+.answer {
+  margin:0.2em 0;
+  display:block;
+}
+
+.answer input {
+  border-radius:0.5rem;
+  padding:0.2em 0.7em;
+}
+
+.form_button {
+    background-color:rgba(128,128,128,0.9);
+    /*background: url(button.png) no-repeat top;*/
+    display:inline-block;
 }
 
 .validators {

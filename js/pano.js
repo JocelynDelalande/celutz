@@ -1,4 +1,4 @@
-if (img_prefix == undefined) var img_prefix = './tiles/ttn_mediatheque/mediatheque_70';
+if (img_prefix == undefined) var img_prefix = 'http://pano.tetaneutral.net/data/tsf2/vpongnian/tiles/ttn_mediatheque/mediatheque_70';
 if (to_cap == undefined) var to_cap = 0;
 if (to_ele == undefined) var to_ele = 0;
 if (to_zoom == undefined) var to_zoom = 0;
@@ -7,6 +7,7 @@ if (cap_min == undefined) var cap_min = cap;
 if (cap_max == undefined) var cap_max = cap_min+360;
 if (ref_points == undefined) var ref_points = new Array();
 if (image_loop == undefined) var image_loop = true;
+
 
 var debug_mode = false;
 var canvas;
@@ -31,8 +32,10 @@ var is_located = false;
 var point_colors = {'pano_point' : '255,128,128',
 		    'ref_point'  : '128,128,255',
 		    'loc_point'  : '128,255,128',
+		    'temporary'  : '255,255,128',
 		    'unlocated'  : '255,255,255'};
 var test = {x:0, y:0, i:100};
+
 
 function nmodulo(val, div) {                // pour obtenir un modulo dans l'espace des nombres naturels N.
     return Math.floor((val%div+div)%div);   // il y a peut être plus simple, mais en attendant .... 
@@ -165,6 +168,83 @@ function drawDecorations(ox, oy, tx, ty, twidth, theight) {
     if (twidth) {
 	cntext.restore();
     }
+    
+}
+
+function insert_drawn_point(lat,lon,alt) {
+	
+	var rt = 6371;  // Rayon de la terre
+    var alt1 = document.getElementById('pos_alt').childNodes[0].nodeValue;
+    var lat1 = document.getElementById('pos_lat').childNodes[0].nodeValue*Math.PI/180;
+    var lon1 = document.getElementById('pos_lon').childNodes[0].nodeValue*Math.PI/180;
+    var alt2 = alt;
+    var lat2 = lat*Math.PI/180;
+    var lon2 = lon*Math.PI/180;
+    
+    var dLat = lat2-lat1;
+    var dLon = lon2-lon1; 
+   
+    var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.sin(dLon/2)*Math.sin(dLon/2)*Math.cos(lat1)*Math.cos(lat2);  // 
+    var angle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = angle*rt;                    // distance du point en Kms
+   
+    var y = Math.sin(dLon) * Math.cos(lat2);
+    var x = Math.cos(lat1)*Math.sin(lat2) - Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
+    var cap = Math.atan2(y,x);                 // cap pour atteindre le point en radians
+    var e = Math.atan2((alt2 - alt1)/1000 - d*d/(2*rt),d);  // angle de l'élévation en radians
+    
+    return {d:d, cap:cap*180/Math.PI, ele:e*180/Math.PI};   // les résultats sont en degrés
+}
+
+localate_point = function () {
+	
+    var lat = document.getElementById("loca_latitude").value;
+    var lon = document.getElementById("loca_longitude").value;
+    var alt = document.getElementById("loca_altitude").value;
+    if (lat == '' || isNaN(lat) || lat <= -90 || lat > 90) {
+	alert("La latitude "+lat+"n'est pas correcte");
+	return;
+    }
+    if (lat == '' || isNaN(lon) || lon <= -180 || lon > 180) {
+	alert("La longitude "+lon+"n'est pas correcte");
+	return;
+    }
+    if (lat == '' || isNaN(alt) || alt < -400) {
+	alert("l'altitude "+alt+"n'est pas correcte");
+	return;
+    }
+	    var opt_ced = new Array();
+	    opt_dce = insert_drawn_point(lat,lon,alt);
+	    // -----Première solution : afficher dynamiquement le point !
+	    var d = opt_dce.d;
+	    var cap = opt_dce.cap;
+	    var ele = opt_dce.ele;
+	    
+	    display_temp(d, cap, ele);
+	   
+}
+
+function display_temp(d,cap,ele) {
+   
+    point_list[point_list.length] = new Array("point temporaire", d,cap,ele, "temporary");
+    reset_zooms();
+    putImage(last.x, last.y);
+}
+
+function arrayUnset(array, value){
+    array.splice(array.indexOf(value), 1);
+}
+
+erase_point = function() {
+	
+	for (var i=0; i<point_list.length; i++) {
+		if(point_list[i][0] == "point temporaire"){
+			arrayUnset(point_list,point_list[i]);
+			loop = erase_point();
+		}	
+	}	
+	reset_zooms();
+    putImage(last.x, last.y);   
 }
 
 function get_file_name(x, y, z) { // recherche du fichier correspondant au zoom et à la position
@@ -181,10 +261,11 @@ function get_file_name(x, y, z) { // recherche du fichier correspondant au zoom 
 }
 
 function keys(key) {
+	
     hide_links();
     evt = key || event;
-    evt.preventDefault();
-    evt.stopPropagation();
+    //evt.preventDefault();
+    //evt.stopPropagation();
     if (!key) {
 	key = window.event;
 	key.which = key.keyCode;
@@ -192,7 +273,7 @@ function keys(key) {
 //    alert(key);
 //    if (!evt.shiftKey) return;
     switch (key.which) {
-    case 66: // b
+    /*case 66: // b
 	alert(key.pageX);
 	test.x=tile.width*(ntiles.x-3);
 	test.y=0;
@@ -202,7 +283,7 @@ function keys(key) {
 	test.x=0;
 	test.y=tile.height*(ntiles.y-3);
 	putImage(test.x, test.y);
-	return;
+	return;*/
     case 36: // home
 	putImage(0, zm.im.height/2);
 	return;
@@ -440,12 +521,15 @@ function tzoom(zv) {
 	    if (ref_points[lbl] != undefined) {
 		typ = 'ref_point';
 		if (!is_located) rxy = {x:ref_points[lbl].x*this.im.width, y:ref_points[lbl].y*this.im.height}
-	    } else if(lnk == '' && is_visible) {
+	    } else if(lnk == '' && is_visible && lbl != 'point temporaire') {
 		typ = 'loc_point';
+	    }else if(is_visible && lbl =='point temporaire') {
+	    typ = 'temporary';
+	    
 	    } else if(is_visible) {
 		typ = 'pano_point';
 		lnk += '&to_zoom='+this.value;
-	    }
+	    } 
 	    this.pt_list[i]['type'] = typ;
 	    this.pt_list[i]['cap'] = cap;
 	    this.pt_list[i]['ele'] = ele;
@@ -700,6 +784,8 @@ function clean_canvas_events(e) {
     speed.y = 0;
 }
 
+
+
 canvas_set_size = function() {
     canvas.style.border = border_width+"px solid red";
     canvas.width = window.innerWidth-2*border_width;
@@ -713,7 +799,41 @@ canvas_resize = function() {
     putImage(last.x, last.y);
 }
 
+
+
+function paramIn(e) {
+	
+	 e = e || window.event; 
+	 var relatedTarget = e.relatedTarget || e.fromElement; 
+	 
+	 while (relatedTarget != adding && relatedTarget.nodeName != 'BODY' && relatedTarget != document && relatedTarget != localisation) {
+	        relatedTarget = relatedTarget.parentNode;
+	 }
+	 
+	 if (relatedTarget != adding && relatedTarget != localisation) {
+		 document.removeEventListener('keydown', keys, false);
+	 }
+}
+
+function paramOut(e) {
+	 
+    e = e || window.event; 
+    var relatedTarget = e.relatedTarget || e.toElement; 
+ 
+    while (relatedTarget != adding && relatedTarget.nodeName != 'BODY' && relatedTarget != document && relatedTarget != localisation) {
+        relatedTarget = relatedTarget.parentNode;
+    }
+ 
+    if (relatedTarget != adding && relatedTarget != localisation) {
+    	document.addEventListener('keydown', keys, false);
+    }
+ 
+}
+
 window.onload = function() {
+	
+	localisation = document.getElementById("locadraw");
+	adding = document.getElementById("adding");
     canvas = document.getElementById("mon-canvas");
     cntext = canvas.getContext("2d");
     canvas_set_size();
@@ -746,9 +866,17 @@ window.onload = function() {
     elvtn_control.onclick = change_angle;
 
     change_angle();
-
+    loca_temp = document.getElementById("loca_button");
+    loca_temp.onclick = localate_point;
+    loca_erase = document.getElementById("loca_erase");
+    loca_erase.onclick = erase_point;
     canvas.addEventListener('mousedown', onImageClick, false);
-    addEventListener('keydown', keys, false);
+    document.addEventListener('keydown', keys, false);
     canvas.addEventListener('mousewheel', wheel_zoom, false);
     window.onresize = canvas_resize;
+    adding.addEventListener('mouseover',paramIn,false);
+    adding.addEventListener('mouseout',paramOut,false);
+    localisation.addEventListener('mouseover',paramIn,false);
+    localisation.addEventListener('mouseout',paramOut,false);
+      
 };

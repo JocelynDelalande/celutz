@@ -1,5 +1,7 @@
 <?php
 $ref_points = array (
+                     'Marc' => array(43.60568, 1.42841, 170),
+                     'FF2' => array(43.67737, 1.45077, 140),
 		     'Clocher de Saint-Sernin' => array(43.6085, 1.4424, 190),
 		     'Clocher des Minimes' => array(43.61811, 1.43639, 165),
 		     "Obélisque de l'observatoire" => array(43.6114, 1.4618, 200),

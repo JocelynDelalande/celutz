@@ -79,6 +79,7 @@
        printf('point_list[%d] = new Array("%s", %03lf, %03lf, %03lf, "");'."\n", $ipt++, $name, $dist, $cap, $ele);
      }
    }
+ 
 
    if (isset($params['reference'])) {
      echo "ref_points = new Array();\n";
@@ -90,15 +91,31 @@
        }
      }
    }
+  
+  $localLat = (isset($_POST["loca_latitude"])) ? $_POST["loca_latitude"] : NULL;
+  $localLon = (isset($_POST["loca_longitude"])) ? $_POST["loca_longitude"] : NULL;
+  $localAlt = (isset($_POST["loca_altitude"])) ? $_POST["loca_altitude"] : NULL;
+ 
+  if ($localLat && $localLon && $localAlt) {
+  	  list($localDistance, $localCap, $localEle) = $pt->coordsToCap($localLat, $localLon, $localAlt);
+  	  $n = "point temporaire";
+      printf('point_list[%d] = new Array("%s", %03lf, %03lf, %03lf, "temporary");'."\n",$ipt++, $n, $localDistance, $localCap, $localEle);
+  } 
   ?>
   </script>
+  
+ 
+
+  
   <link type="image/x-icon" rel="shortcut icon" href="images/tsf.png"/>
   <link rel="stylesheet" media="screen" href="css/all.css" />
+  <script src="js/hide_n_showForm.js"></script> 
 </head>
 <body>
   <canvas id="mon-canvas">
     Ce message indique que ce navigateurs est vétuste car il ne supporte pas <samp>canvas</samp> (IE6, IE7, IE8, ...)
   </canvas>
+  
   <fieldset id="control"><legend>contrôle</legend>
       <label>Zoom : <input type="range" min="0" max="2" value="2" id="zoom_ctrl"/></label>
       <label>Cap : <input type="number" min="0" max="360" step="10" value="0" autofocus="" id="angle_ctrl"/></label>
@@ -106,13 +123,79 @@
   </fieldset>
 
   <?php
-      //phpinfo();exit;
+      
      if ($params && isset($params['latitude']) && isset($params['longitude'])) {
        print("<div id=\"params\">\n");
-       printf ("<p>latitude :   <em>%.3f°</em></p>\n", $params['latitude']);
-       printf ("<p>longitude : <em>%.3f°</em></p>\n", $params['longitude']);
-       if (isset($params['altitude'])) printf ("<p>altitude : <em>%d m</em></p>\n", $params['altitude']);
+       printf ("<p>latitude :   <em><span id=\"pos_lat\">%.5f</span>°</em></p>\n", $params['latitude']);
+       printf ("<p>longitude : <em><span id=\"pos_lon\">%.5f</span>°</em></p>\n", $params['longitude']);
+       if (isset($params['altitude'])) printf ("<p>altitude : <em><span id=\"pos_alt\">%d</span> m</em></p>\n", $params['altitude']); 
        print("</div>\n");
+       ?>
+       <span id="loca"><img src="images/locapoint.svg" id="icone" onclick="showLoca()"/></span>
+  <fieldset id="locadraw"><legend id="" onclick="hideLoca()">Localiser un point</legend>
+    <form id="form_loca" method="post" name="form_localate" action="panorama.php?dir=<?php echo $_GET['dir'];?>&amp;panorama=<?php echo $_GET['panorama'];?>">
+      <label class="form_col" title="La latitude ϵ [-90°, 90°]. Ex: 12.55257">Latitude :
+	<input  name="loca_latitude" type="number" min="-90" max="90"  id="loca_latitude"/></label>
+	         
+      <label class="form_col" title="La longitude ϵ [-180°, 180°]. Ex: 144.14723">Longitude :
+	<input name="loca_longitude" type="number" min="-180" max="180" id="loca_longitude"/></label>
+	      
+      <label class="form_col" title="L'altitude positive Ex: 170">Altitude :
+	<input  name="loca_altitude" type="number" min="-400" id="loca_altitude"/></label>
+	       
+      <div class="answer">
+	<input type="button" value="Localiser" id="loca_button" class="form_button"/> 
+	<input type="reset" value="Reset" class="form_button"/>
+	<input type="button" value="Effacer" class="form_button" id="loca_erase"/>
+      </div>
+	      
+    </form>
+  </fieldset>
+       <?php
+     } elseif ($params == false ){
+     	$dir   = $_GET['dir'];
+        $name  = $_GET['panorama'];
+     	?>
+       <div id="addParams">		
+     	  <label onclick="showForm()" value="Hide label">Paramétrer le panorama</label>	
+       </div>
+       <fieldset id="adding"><legend id="lgd" onclick="hideForm()">Paramètrer le panorama</legend>
+	 <form action="addParams.php?dir=<?php echo $dir;?>&amp;panorama=<?php echo $name;?>" id="form_param" method="post">
+	   	  
+	   <label class="form_col" for="param_title" title="Au moins 4 caractères">Titre: </label>
+	   <input type="text" id="param_title" name="param_title"/>
+	   
+	   <label class="form_col" for="param_latitude" title="La latitude ϵ [-90°, 90°]. Ex: 12.55257">Latitude: </label>
+	   <input  name="param_latitude" type="text" id="param_latitude" />
+	         
+	   <label class="form_col" for="param_longitude" title="La longitude ϵ [-180°, 180°]. Ex: 144.14723">Longitude: </label>
+	   <input name="param_longitude" type="text" id="param_longitude" />
+	   
+	   <label class="form_col" for="param_altitude" title="L'altitude positive Ex: 170">Altitude: </label>
+	   <input  name="param_altitude" type="text" id="param_altitude" />
+	  
+	   <label class="form_col" for="param_elevation" title="élévation ϵ [-10,10] ( valeur par défaut : 0)">Elévation: </label>
+	   <input  name="param_elevation" type="text" id="param_elevation" />
+	   
+	   <label class="form_col" for="param_loop" title="L'image fait elle 360° ? ">Rebouclage: </label>
+	   <input class="radio" type="radio" name="param_loop" value="true" checked="checked"> Oui
+           <input class="radio" type="radio" name="param_loop" value="false"> Non
+	   
+	   <input type="hidden" value="Localiser" id="loca_button" class="form_button" style="width:70px" /> 
+	   <input type="hidden" value="Effacer" class="form_button" id="loca_erase"/>
+	  
+	   <div class="answer">
+	     <input type="submit" value="Submit" class="form_button"/> 
+	     <input type="reset" value="Reset" class="form_button"/>
+	   </div>
+	      
+  	 </form>
+       </fieldset>
+  
+ 
+       <script src="js/pano_deroulant.js"></script> 
+      
+     	<?php
      }
      echo '<p id="info"></p>'."\n";
      if (count($extra_names) > 1) {
@@ -126,7 +209,8 @@
        echo "<input type=\"button\" id=\"do-cancel\" value=\"annuler\"/>\n";
        echo "</p>\n";
      }
-  ?> 
+     
+     ?>
   <p class="validators"><a href="http://validator.w3.org/check?uri=referer">page xHTML validé !</a></p>
   <p id="res"></p>
 </body>
