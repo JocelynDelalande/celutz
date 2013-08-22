@@ -8,7 +8,7 @@ min_scale=0
 max_scale=8
 usage="$0 [-x <x_tile_size>] [-y <y_tile_size>] [-p <prefix_result>] [-t] [-h] [-m <min_zoom>] [-M <max_zoom>] <image_to_convert>\n   example: $0 -r test_res"
 
-if ! which tifftopnm pnmscale convert > /dev/null; then
+if ! which anytopnm pnmscale convert > /dev/null; then
     echo "il faut installer les paquets netpbm et imageMagick pour utiliser ce script !"
 fi
 
@@ -44,9 +44,9 @@ fi
 
 wfname=$prefix.pnm
 if ! $test_mode; then
-    tifftopnm $fname > $wfname
+    anytopnm $fname > $wfname
 else
-    echo "tifftopnm $fname > $wfname"
+    echo "anytopnm $fname > $wfname"
 fi
 
 echo "préfixe : "$prefix
