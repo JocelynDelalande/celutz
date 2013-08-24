@@ -1,5 +1,21 @@
 #!/bin/bash
 
+trap clean_tmp EXIT
+# fin d'eviter tout problème de locales en reste en C de base.
+
+set -e
+export LANG=C
+
+# pour éliminer systématiquement les fichier temporaires créés ic
+function clean_tmp() {
+    if [ -n "$wfname" ]; then
+	rm $wfname
+    fi
+    if [ -n "$tmp_file" ]; then
+	rm $tmp_file
+    fi
+}
+
 test_mode=false
 memory_limit=256
 crop_x=256
@@ -42,7 +58,7 @@ if [ -z "$prefix" ]; then
     prefix=$(basename $1|sed 's/\..*$//')
 fi
 
-wfname=$prefix.pnm
+wfname=$(mktemp ${prefix}_XXXX.pnm)
 if ! $test_mode; then
     anytopnm $fname > $wfname
 else
@@ -51,12 +67,14 @@ fi
 
 echo "préfixe : "$prefix
 
+tmp_file=$(mktemp)
+
 for ((z=$min_scale; z <= $max_scale; z++))
 do
     fprefix=${prefix}_00$z
-    LANG=C  printf -v ratio %1.4lf $(echo "1 / (2^$z)" | bc -l)
+    printf -v ratio %1.4lf $(echo "1 / (2^$z)" | bc -l)
     echo génération du ratio $ratio
-    zwfname=tmp.pnm
+    zwfname=$tmp_file
 
     if $test_mode; then
 	if [ $ratio = 1.0000 ]; then
@@ -73,17 +91,23 @@ do
 	if [ $ratio = 1.0000 ]; then
 	    zwfname=$wfname
 	else
-	    pnmscale $ratio $wfname > $zwfname
+	    if ! pnmscale $ratio $wfname > $zwfname; then
+		echo "operation 'pnmscale $ratio $wfname > $zwfname' en erreur"
+		exit 1
+	    fi
 	fi
-	convert $zwfname \
+	if convert $zwfname \
 	    -limit memory $memory_limit \
             -crop ${crop_x}x${crop_x} \
             -set filename:tile "%[fx:page.x/${crop_x}]_%[fx:page.y/${crop_y}]" \
-            +repage +adjoin "${fprefix}_%[filename:tile].jpg"
+            +repage +adjoin "${fprefix}_%[filename:tile].jpg"; then
+	    echo "Nombre des fichiers produits :" $(ls -la ${fprefix}_*| wc -l)
+	else
+	    echo "operation 'convert' en erreur"
+	    exit 2
+	fi
     fi
 done
-
-echo  ${fprefix}_*
 
 if ! $test_mode; then
 ## les lignes ci dessous sont destinnées à mettre des 0 en debut des numéros de ligne et de colonnes
@@ -92,7 +116,4 @@ if ! $test_mode; then
     rename 's/_(\d)_(\d+\.jpg)$/_00$1_$2/' ${prefix}_*
     rename 's/_(\d+)_(\d\d)(\.jpg)$/_$1_0$2$3/' ${prefix}_*
     rename 's/_(\d+)_(\d)(\.jpg)$/_$1_00$2$3/' ${prefix}_*
-    rm $zwfname $wfname
-else
-    echo rm $zwfname $wfname
 fi

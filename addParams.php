@@ -1,118 +1,106 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+   <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+   <link rel="stylesheet" media="screen" href="css/index_style.css" />
+   <title>Positionnerment dun panoramique</title>
 <?php
-if(isset($_GET['dir']) && isset($_GET['panorama'])){
-	
-	$_GET['dir'] = htmlspecialchars($_GET['dir']);              //Protection des variables GET.
-	$_GET['panorama'] = htmlspecialchars($_GET['panorama']);    // ...
-	
-	if (isset($_POST['param_latitude']) && isset($_POST['param_longitude']) 
-	&& isset($_POST['param_altitude']) && isset($_POST['param_elevation']) 
-	&& isset($_POST['param_title']) && isset($_POST['param_loop'])) {
-		
-		foreach ($_POST as $value)                              //Protection des variables POST.
-		{	
-		    $value = htmlspecialchars($value);
-		}
-
-		/* --- Vérification des inputs avec des regex. ---*/
-	    // Pour la latitude : ( Le javascript bride entre -90 et 90)
-	    if (preg_match("#^(\-?[1-9]+[0-9]?[.,]{0,1}[0-9]{0,6}|\-?[0-9]{1}[.,]{0,1}[0-9]{0,6})$#", $_POST['param_latitude']))
-	    {
-	    	$lat = $_POST['param_latitude'];
-	        //echo 'Le ' . $_POST['param_latitude'] . ' est un numéro <strong>valide</strong> !';
-	    }
-	    else
-	    {
-	        echo 'Le ' . $_POST['param_latitude'] . ' n\'est pas valide, recommencez !';
-	        
-	    }
-	    
-	    // Pour la longitude : ( Le javascript bride entre -180 et 180)
-	    if (preg_match("#^(\-?[1-9]+[0-9]?[.,]{0,1}[0-9]{0,6}|\-?[0-9]{0,1}[.,]{1}[0-9]{0,6})$#", $_POST['param_longitude']))
-	    {
-	    	$lon = $_POST['param_longitude'];
-	        //echo 'Le ' . $_POST['param_longitude'] . ' est un numéro <strong>valide</strong> !';
-	    }
-	    else
-	    {
-	        echo 'Le ' . $_POST['param_longitude'] . ' n\'est pas valide, recommencez !';
-	        
-	    }
-	    
-	    // Pour l'altitude ( Le javascript bride entre 0 et 500)
-	    if (preg_match("#^([1-9]+[0-9]{0,4}|0)$#", $_POST['param_altitude']))
-	    {
-	    	$alt = $_POST['param_altitude'];
-	        //echo 'Le ' . $_POST['param_altitude'] . ' est un numéro <strong>valide</strong> !';
-	    }
-	    else
-	    {
-	        echo 'Le ' . $_POST['param_altitude'] . ' n\'est pas valide, recommencez !';
-	        
-	    }
-	    
-	    // Pour l'élévation  ( Le javascript bride entre -10 et 10)
-	    if (preg_match("#^(\-?[1-9]+[0-9]?|0)$#", $_POST['param_elevation']))
-	    {
-	    	$ele = $_POST['param_elevation'];
-	        //echo 'Le ' . $_POST['param_elevation'] . ' est un numéro <strong>valide</strong> !';
-	    }
-	    else
-	    {
-	        echo 'Le ' . $_POST['param_elevation'] . ' n\'est pas valide, recommencez !';
-	        
-	    }
-	    
-	    $loop = $_POST['param_loop'];   // Variable radio automatiquement présente
-	    if(isset($lat) && isset($lon) && isset($alt) && isset($ele) && isset($loop)) {
- 	
-	    	// On recherche le dossier correspondant au panorama en question
-	    	$dir_file = "/var/www/data/tsf2/vpongnian/panorama/".$_GET['dir']."/".$_GET['panorama'];
-	    	$dir_open = opendir($dir_file);
-	    	while (false !== ($file = readdir($dir_open))) {
-    	               // Si on trouve bien des tuiles
-		       if (preg_match('/(.*)_[0-9]+_[0-9]+_[0-9]+\.jpg$/', $file, $reg)) {
-			 $prefix = $reg[1];
-			 $new_param_file = $prefix.".params";
-			 break;   // On sort à la première tuile trouvée
-		       }
-		    }
-		    closedir($dir_open);
-		    
-		    $retour = "\n"; 
-                    // On vérifie qu'on a bien crée un nouveau fichier .params et on écrit dedans.
-		    if(isset($new_param_file)){
-		    	$param_file = fopen($dir_file."/".$new_param_file,'a+');
-		    	fputs($param_file,"titre = \"" . $_POST['param_title'] . "\"");
-		    	fputs($param_file,$retour);
-		    	fputs($param_file,"latitude = " . $lat);
-		    	fputs($param_file,$retour);
-		    	fputs($param_file,"longitude = " . $lon);
-		    	fputs($param_file,$retour);
-		    	fputs($param_file,"altitude = " . $alt);
-		    	fputs($param_file,$retour);
-		    	fputs($param_file,"elevation = " . $alt);
-		    	fputs($param_file,$retour);
-		    	fputs($param_file,"image_loop =" . $loop);
-		    	fputs($param_file,$retour);
-		    	fclose($param_file);
-		    	
-		    	echo 'Paramétrage OK. Retour au panorama';
-		    	header("Refresh: 1; URL=index.php");  
-		    } else {
-		    	
-		    	echo "<script>alert(\"impossible d'écrire dans le fichier\")</script>";
-		    }
-	    }
-	} else {
-		echo '<script>alert(\'$_POST manquant\')</script>';
-		header("Refresh: 2; URL=javascript:history.back();"); 	
-	}
-} else {
-echo '<script>alert(\'La destinaton est manquante\')</script>';
-header("Refresh: 2; URL=javascript:history.back();");
+   // tableau de vérification de conformité
+ $params = array('title' => array('name' => 'titre', 
+				  'pattern' => '^.{1,50}$',
+				  'required' => true),
+		 'latitude' => array('name' => 'latitude', 
+				     'type' => 'numeric',
+				     'min' => -180,
+				     'max' => 180,
+				     'required' => true),
+		 'longitude' => array('name' => 'longitude', 
+				     'type' => 'numeric',
+				      'min' => -180,
+				      'max' => 180,
+				      'required' => true),
+		 'altitude' => array('name' => 'altitude', 
+				     'type' => 'numeric',
+				     'min' => -180,
+				     'max' => 180,
+				     'required' => true),
+		 'loop' => array('name' => 'image_loop', 
+				 'type' => 'boolean',
+				 'required' => false),
+		 'dir' => array('required' => true),
+		 'panorama' => array('required' => true));
+$wrong = array();
+$values = array();
+// vérification de la conformité
+foreach($params as $param => $check) {
+  if (isset($_REQUEST['param_'.$param])) {
+    $tst = $_REQUEST['param_'.$param];
+    if ((isset($check['min']) || isset($check['max'])) && ! is_numeric($tst)) $wrong[$param] = "<em>$tst</em> ne correspond pas à une valeur numérique";
+    else if (isset($check['min']) && $tst < $check['min']) $wrong[$param] = "<em>$tst</em> trop bas";
+    else if (isset($check['max']) && $tst > $check['max']) $wrong[$param] = "<em>$tst</em> trop haut";
+    else if (isset($check['pattern']) && preg_match('/'.preg_quote($check['pattern']).'/', $tst)) $wrong[$param] = "<em>$tst</em> non conforme";
+    else $values[$param] = $tst;
+  } else if (isset($check['required']) && $check['required']) {
+    $wrong[$param] = '<em>$tst</em> est un paramètre manquant';
+  }
 }
+
+if (isset($values['panorama'])) {
+  $back_url = sprintf('panorama.php?panorama=%s', $values['panorama']);
+  if (isset($values['dir'])) $back_url .= '&amp;dir='. $values['dir'];
+} else {
+  $back_url = '.';
+}
+
+if (count($wrong) == 0) {
+  // On recherche le dossier correspondant au panorama en question
+  $dir_file = "./".$values['dir']."/".$values['panorama'];
+  $dir_open = opendir($dir_file);
+  while (false !== ($file = readdir($dir_open))) {
+    // Si on trouve bien des tuiles
+    if (preg_match('/(.*)_[0-9]+_[0-9]+_[0-9]+\.jpg$/', $file, $reg)) {
+      $prefix = $reg[1];
+      $new_param_file = $prefix.".params";
+      break;   // On sort à la première tuile trouvée
+    }
+  }
+  closedir($dir_open);
+  
+  // On vérifie qu'on a bien créée un nouveau fichier .params et on écrit dedans.
+  if(isset($new_param_file)){
+    $fid = fopen($dir_file."/".$new_param_file,'a+');
+    echo '<p>Les valeurs suivantes sont utilisées.</p>'."\n";
+    echo "<dl>\n";
+    foreach ($values as $k => $v) {
+      echo "$k -$v<br/>\n";
+      if (isset($params[$k]['name'])) {
+	$nm = $params[$k]['name'];
+	if (isset($params[$k]['type']) && $params[$k]['type'] == 'numeric') {
+	  $vf = $v;
+	} else if (isset($params[$k]['type']) && $params[$k]['type'] == 'boolean') {
+	  $vf = $v ? "true" : "false"; 
+	} else {
+	  $vf = "\"$v\"";
+	}
+	fputs($fid, "$nm = $vf\n");
+	printf("<dt>%s</dt>\n<dd>%s</dd>\n", $nm, $vf);
+      }
+    }
+    echo "</dl>\n";
+    fclose($fid);
+    echo '<p class="succes">Paramétrage terminé.</p>'."\n";
+  } else {
+    printf("<p class=\"error\">impossible d'écrire dans le fichier '%s'</p>\n", $dir_file);
+  }
+ } else {
+  echo '<p class="error">Les valeurs suivantes sont incorrectes.</p>'."\n";
+  echo "<dl>\n";
+  foreach ($wrong as $k => $v) {
+    printf("<dt>%s</dt>\n<dd>%s</dd>\n", $k, $v);
+  }
+  echo "</dl>\n";
+}
+printf('<a href="%s">Retour au panorama</a></p>'."\n", $back_url);
 
 ?>
 </html>

@@ -171,9 +171,8 @@ function drawDecorations(ox, oy, tx, ty, twidth, theight) {
     
 }
 
-function insert_drawn_point(lat,lon,alt) {
-	
-	var rt = 6371;  // Rayon de la terre
+function insert_drawn_point(lat, lon, alt) {
+    var rt = 6371;  // Rayon de la terre
     var alt1 = document.getElementById('pos_alt').childNodes[0].nodeValue;
     var lat1 = document.getElementById('pos_lat').childNodes[0].nodeValue*Math.PI/180;
     var lon1 = document.getElementById('pos_lon').childNodes[0].nodeValue*Math.PI/180;
@@ -196,8 +195,7 @@ function insert_drawn_point(lat,lon,alt) {
     return {d:d, cap:cap*180/Math.PI, ele:e*180/Math.PI};   // les résultats sont en degrés
 }
 
-localate_point = function () {
-	
+function localate_point() {
     var lat = document.getElementById("loca_latitude").value;
     var lon = document.getElementById("loca_longitude").value;
     var alt = document.getElementById("loca_altitude").value;
@@ -209,23 +207,16 @@ localate_point = function () {
 	alert("La longitude "+lon+"n'est pas correcte");
 	return;
     }
-    if (lat == '' || isNaN(alt) || alt < -400) {
+    if (lat == '' || isNaN(alt) || alt < -400 || alt > 10000000) {
 	alert("l'altitude "+alt+"n'est pas correcte");
 	return;
     }
-	    var opt_ced = new Array();
-	    opt_dce = insert_drawn_point(lat,lon,alt);
-	    // -----Première solution : afficher dynamiquement le point !
-	    var d = opt_dce.d;
-	    var cap = opt_dce.cap;
-	    var ele = opt_dce.ele;
-	    
-	    display_temp(d, cap, ele);
-	   
+    var opt_ced = new Array();
+    opt_dce = insert_drawn_point(lat, lon, alt);
+    display_temp(opt_dce.d, opt_dce.cap, opt_dce.ele);
 }
 
-function display_temp(d,cap,ele) {
-   
+function display_temp(d,cap,ele) {  
     point_list[point_list.length] = new Array("point temporaire", d,cap,ele, "temporary");
     reset_zooms();
     putImage(last.x, last.y);
@@ -235,8 +226,7 @@ function arrayUnset(array, value){
     array.splice(array.indexOf(value), 1);
 }
 
-erase_point = function() {
-	
+function erase_point() {	
 	for (var i=0; i<point_list.length; i++) {
 		if(point_list[i][0] == "point temporaire"){
 			arrayUnset(point_list,point_list[i]);
@@ -784,8 +774,6 @@ function clean_canvas_events(e) {
     speed.y = 0;
 }
 
-
-
 canvas_set_size = function() {
     canvas.style.border = border_width+"px solid red";
     canvas.width = window.innerWidth-2*border_width;
@@ -799,20 +787,17 @@ canvas_resize = function() {
     putImage(last.x, last.y);
 }
 
-
-
 function paramIn(e) {
-	
-	 e = e || window.event; 
-	 var relatedTarget = e.relatedTarget || e.fromElement; 
-	 
-	 while (relatedTarget != adding && relatedTarget.nodeName != 'BODY' && relatedTarget != document && relatedTarget != localisation) {
-	        relatedTarget = relatedTarget.parentNode;
-	 }
-	 
-	 if (relatedTarget != adding && relatedTarget != localisation) {
-		 document.removeEventListener('keydown', keys, false);
-	 }
+    e = e || window.event; 
+    var relatedTarget = e.relatedTarget || e.fromElement; 
+    
+    while (relatedTarget != adding && relatedTarget.nodeName != 'BODY' && relatedTarget != document && relatedTarget != localisation) {
+	relatedTarget = relatedTarget.parentNode;
+    }
+    
+    if (relatedTarget != adding && relatedTarget != localisation) {
+	document.removeEventListener('keydown', keys, false);
+    }
 }
 
 function paramOut(e) {
@@ -830,10 +815,9 @@ function paramOut(e) {
  
 }
 
-window.onload = function() {
-	
-	localisation = document.getElementById("locadraw");
-	adding = document.getElementById("adding");
+window.onload = function() {	
+    localisation = document.getElementById("locadraw");
+    adding = document.getElementById("adding");
     canvas = document.getElementById("mon-canvas");
     cntext = canvas.getContext("2d");
     canvas_set_size();
@@ -866,17 +850,26 @@ window.onload = function() {
     elvtn_control.onclick = change_angle;
 
     change_angle();
-    loca_temp = document.getElementById("loca_button");
-    loca_temp.onclick = localate_point;
-    loca_erase = document.getElementById("loca_erase");
-    loca_erase.onclick = erase_point;
+    loca_temp = document.getElementById("loca_show");
+    if (loca_temp) {
+	loca_temp.onclick = showLoca;
+	loca_temp = document.getElementById("loca_hide");
+	loca_temp.onclick = hideLoca;
+	loca_temp = document.getElementById("loca_button");
+	loca_temp.onclick = localate_point;
+	loca_erase = document.getElementById("loca_erase");
+	loca_erase.onclick = erase_point;
+	localisation.addEventListener('mouseover',paramIn,false);
+	localisation.addEventListener('mouseout',paramOut,false);
+    }
     canvas.addEventListener('mousedown', onImageClick, false);
     document.addEventListener('keydown', keys, false);
     canvas.addEventListener('mousewheel', wheel_zoom, false);
     window.onresize = canvas_resize;
-    adding.addEventListener('mouseover',paramIn,false);
-    adding.addEventListener('mouseout',paramOut,false);
-    localisation.addEventListener('mouseover',paramIn,false);
-    localisation.addEventListener('mouseout',paramOut,false);
-      
+    if (adding) {
+	document.getElementById("paramFormHide").onclick = hideForm;
+	document.getElementById("paramFormShow").onclick = showForm;
+	adding.addEventListener('mouseover', paramIn, false);
+	adding.addEventListener('mouseout', paramOut, false);
+    }
 };

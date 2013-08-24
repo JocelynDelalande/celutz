@@ -7,6 +7,8 @@ class site_point {
   private $zooms;
 
   public function __construct($dir) {
+    // si $dir n'est pas un répertoire il ne s'agit pas d'un panorama.
+    if (!is_dir($dir)) return;
     $this->base_dir = $dir;
     $dir_fd = opendir($this->base_dir);
   
@@ -80,8 +82,7 @@ class site_point {
     
     $e = atan2(($alt2 - $alt1)/1000 - $d*$d/(2*$rt), $d);  // angle de l'élévation en radians
     //    printf("%s, %s, %s, %s\n",$lat1, $this->params['latitude'], $lat, $dLat);
-	
-    return array($d, $cap*180/M_PI, $e*180/M_PI, $rapport);   // les résultats sont en degrés
+    return array($d, $cap*180/M_PI, $e*180/M_PI);   // les résultats sont en degrés
   }
   
 }

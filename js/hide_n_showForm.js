@@ -1,5 +1,4 @@
 function showForm() { 
-  
     var displayAddParams = document.getElementById('addParams');
     var displayAdding = document.getElementById ('adding');
     displayAddParams.style.visibility = 'hidden';
@@ -7,7 +6,6 @@ function showForm() {
 } 
   
 function hideForm() { 
-      
     var displayAddParams = document.getElementById('addParams');
     var displayAdding = document.getElementById ('adding');
     displayAddParams.style.visibility = 'visible';
@@ -15,17 +13,15 @@ function hideForm() {
 } 
   
 function showLoca() { 
-      
-    var displayloca = document.getElementById('loca');
+    var displayloca = document.getElementById('loca_show');
     var putDraw = document.getElementById ('locadraw');
     displayloca.style.visibility = 'hidden';
     putDraw.style.visibility = 'visible'; 
 } 
   
 function hideLoca() { 
-      
-    var displayloca = document.getElementById('loca');
+    var displayloca = document.getElementById('loca_show');
     var putDraw = document.getElementById ('locadraw');
     displayloca.style.visibility = 'visible';
     putDraw.style.visibility = 'hidden';
-} 
+}
