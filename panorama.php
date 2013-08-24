@@ -156,8 +156,8 @@ EO_FORM_PARAM;
   
   <fieldset id="control"><legend>contrôle</legend>
       <label>Zoom : <input type="range" min="0" max="2" value="2" id="zoom_ctrl"/></label>
-      <label>Cap : <input type="number" min="0" max="360" step="10" value="0" autofocus="" id="angle_ctrl" step="any"/></label>
-      <label>Élévation : <input type="number" min="-90" max="90" step="1" value="0" autofocus="" id="elvtn_ctrl" step="any"/></label>
+      <label>Cap : <input type="number" min="0" max="360" step="10" value="0" autofocus="" id="angle_ctrl"/></label>
+      <label>Élévation : <input type="number" min="-90" max="90" step="1" value="0" autofocus="" id="elvtn_ctrl"/></label>
   </fieldset>
 
   <?php
@@ -190,7 +190,7 @@ EO_FORM_PARAM;
   ?>
   <p id="res"></p>
   <div class="validators">
-    pages validées par
+    page validée par
     <a href="http://validator.w3.org/check?uri=referer"><img src="images/valid_xhtml.svg" alt="Valid XHTML 1.1" title="xHTML 1.1 validé !"/></a>
     <a href="http://jigsaw.w3.org/css-validator/check/referer"><img src="images/valid_css.svg" alt="CSS validé !" title="CSS validé !"/></a>
   </div>
