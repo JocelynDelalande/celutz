@@ -8,6 +8,9 @@ if (cap_max == undefined) var cap_max = cap_min+360;
 if (ref_points == undefined) var ref_points = new Array();
 if (image_loop == undefined) var image_loop = true;
 
+var pt_alt;
+var pt_lat;
+var pt_lon;
 
 var debug_mode = false;
 var canvas;
@@ -173,9 +176,9 @@ function drawDecorations(ox, oy, tx, ty, twidth, theight) {
 
 function insert_drawn_point(lat, lon, alt) {
     var rt = 6371;  // Rayon de la terre
-    var alt1 = document.getElementById('pos_alt').childNodes[0].nodeValue;
-    var lat1 = document.getElementById('pos_lat').childNodes[0].nodeValue*Math.PI/180;
-    var lon1 = document.getElementById('pos_lon').childNodes[0].nodeValue*Math.PI/180;
+    var alt1 = pt_alt;
+    var lat1 = pt_lat*Math.PI/180;
+    var lon1 = pt_lon*Math.PI/180;
     var alt2 = alt;
     var lat2 = lat*Math.PI/180;
     var lon2 = lon*Math.PI/180;
@@ -713,6 +716,7 @@ function manage_ref_points(e) {
     var sel_pt = document.getElementById('sel_point');
     var do_insert = document.getElementById('do-insert');
     var do_delete = document.getElementById('do-delete');
+    var show_cap = document.getElementById('show-cap');
     var pos_x = nmodulo(last.x + e.pageX - canvas_pos.x - canvas.width/2, zm.im.width);
     var pos_y = last.y + e.pageY - canvas_pos.y - canvas.height/2;
     for(var i = 0; i < zm.pt_list.length; i++) {
@@ -724,6 +728,8 @@ function manage_ref_points(e) {
     }
     do_delete.onclick = function() {delete_ref_point(insrt)};
     do_insert.onclick = function() {insert_ref_point(insrt, e.pageX-canvas_pos.x, e.pageY-canvas_pos.y)};
+    var res = zm.get_cap_ele(pos_x, zm.im.height/2 - pos_y);
+    show_cap.onclick = function() {window.open("show_capline.php?cap="+res.cap+'&org_lat='+pt_lat+'&org_lon='+pt_lon)};
     return false;
 }
 
@@ -815,6 +821,10 @@ function paramOut(e) {
 }
 
 window.onload = function() {	
+    pt_alt = document.getElementById('pos_alt').childNodes[0].nodeValue;
+    pt_lat = document.getElementById('pos_lat').childNodes[0].nodeValue;
+    pt_lon = document.getElementById('pos_lon').childNodes[0].nodeValue;
+
     localisation = document.getElementById("locadraw");
     adding = document.getElementById("adding");
     canvas = document.getElementById("mon-canvas");

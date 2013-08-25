@@ -184,6 +184,7 @@ EO_FORM_PARAM;
        echo "<input type=\"button\" id=\"do-insert\" value=\"insérer\"/>\n";
        echo "<input type=\"button\" id=\"do-delete\" value=\"suppimer\"/>\n";
        echo "<input type=\"button\" id=\"do-cancel\" value=\"annuler\"/>\n";
+       echo "<input type=\"button\" id=\"show-cap\" value=\"visualiser cet axe sur OSM\"/>\n";
        echo "</p>\n";
      }
      
