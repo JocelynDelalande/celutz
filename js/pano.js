@@ -466,7 +466,6 @@ function tzoom(zv) {
 		this.ref_pixels[0].shift_y = this.ref_pixels[ord_pts.length].shift_y - dpix*this.ref_pixels[0].dshft_y;
 	    } else {
 		this.ref_pixels[0].shift_y = this.ref_pixels[1].shift_y;
-		this.ref_pixels[ord_pts.length].shift_y = this.ref_pixels[ord_pts.length-1].shift_y;
 		this.ref_pixels[0].dshft_y = 0;
 		this.ref_pixels[ord_pts.length].dshft_y = 0;
 	    }
