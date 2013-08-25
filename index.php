@@ -49,8 +49,12 @@ try {
 	<a href="creerPano.php" title="Générer un panorama à partir d\'une image déjà envoyée">Générer un panorama</a>
       </p>
     </section>
-    <footer>
-      <p class="validators"><a href="http://validator.w3.org/check?uri=referer">page xHTML validé !</a></p>
-    </footer>
+    <footer class="validators"><samp>
+      page validée par
+      <a href="http://validator.w3.org/check?uri=referer"><img src="images/valid_xhtml.svg"
+							       alt="Valid XHTML" title="xHTML validé !"/></a>
+      <a href="http://jigsaw.w3.org/css-validator/check/referer"><img src="images/valid_css.svg"
+								      alt="CSS validé !" title="CSS validé !"/></a>
+    </samp></footer>
   </body>
 </html>

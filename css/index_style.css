@@ -22,7 +22,10 @@ h1 {
     padding:0.2rem;
 }
 
-img {vertical-align:middle}
+img {
+    vertical-align:middle;
+    height:1em;
+}
 
 h2 {
     padding:0.5em 1em;
@@ -83,9 +86,17 @@ footer {
   margin:1rem 0
 }
 
-.validators a {
-    background-color:#fff;
+.validators samp {
     border-radius: 0.4rem;
-    padding:0.3ex;
+    padding:0.2em 0.3em;
     text-shadow: 0.1em 0.05em 0.15em #444; 
+    background-color:#fff;
+}
+
+.validators a {
+  border:solid 0.2em #FFF;
+}
+
+.validators a:hover {
+  border-color:#F00;
 }

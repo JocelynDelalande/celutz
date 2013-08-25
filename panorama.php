@@ -191,8 +191,8 @@ EO_FORM_PARAM;
   <p id="res"></p>
   <div class="validators">
     page validée par
-    <a href="http://validator.w3.org/check?uri=referer"><img src="images/valid_xhtml.svg" alt="Valid XHTML 1.1" title="xHTML 1.1 validé !"/></a>
-    <a href="http://jigsaw.w3.org/css-validator/check/referer"><img src="images/valid_css.svg" alt="CSS validé !" title="CSS validé !"/></a>
+       <a href="http://validator.w3.org/check?uri=referer"><img src="images/valid_xhtml.svg" alt="Valid XHTML" title="xHTML validé !"/></a>
+       <a href="http://jigsaw.w3.org/css-validator/check/referer"><img src="images/valid_css.svg" alt="CSS validé !" title="CSS validé !"/></a>
   </div>
 </body>
 </html>

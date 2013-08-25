@@ -22,4 +22,5 @@ $ref_points = array (
 		     "Cheminée du sang de serp" => array(43.62494, 1.42202, 170),
 		     "Château d'eau de blagnac" => array(43.62443, 1.39547, 170),
 		     "Château d'eau de fenouillet" => array(43.67984, 1.39290,170),
+		     "Tour du boulevard de Genève" => array(43.617408, 1.419533, 163),
 		     );
