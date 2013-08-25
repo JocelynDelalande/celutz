@@ -1,4 +1,5 @@
 if (img_prefix == undefined) var img_prefix = 'http://pano.tetaneutral.net/data/tsf2/vpongnian/tiles/ttn_mediatheque/mediatheque_70';
+if (title == undefined) var title = 'point non défini';
 if (to_cap == undefined) var to_cap = 0;
 if (to_ele == undefined) var to_ele = 0;
 if (to_zoom == undefined) var to_zoom = 0;
@@ -729,7 +730,7 @@ function manage_ref_points(e) {
     do_delete.onclick = function() {delete_ref_point(insrt)};
     do_insert.onclick = function() {insert_ref_point(insrt, e.pageX-canvas_pos.x, e.pageY-canvas_pos.y)};
     var res = zm.get_cap_ele(pos_x, zm.im.height/2 - pos_y);
-    show_cap.onclick = function() {window.open("show_capline.php?cap="+res.cap+'&org_lat='+pt_lat+'&org_lon='+pt_lon)};
+    show_cap.onclick = function() {window.open('show_capline.php?title='+encodeURIComponent(title)+'&cap='+res.cap+'&org_lat='+pt_lat+'&org_lon='+pt_lon)};
     return false;
 }
 

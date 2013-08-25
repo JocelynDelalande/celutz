@@ -73,6 +73,7 @@ EO_FORM_PARAM;
   ?>
   <script>
    <?php
+     printf ("var title = \"%s\"\n", $titre);
      printf ("var img_prefix = '%s/%s'\n", $base_dir, $prefix);
      if (is_array($params)) $opt_vals = array_merge($params, $opt_vals);
      foreach(array('to_cap', 'to_ele', 'to_zoom', 'image_loop') as $val) {

@@ -4,15 +4,19 @@
   <link type="image/x-icon" rel="shortcut icon" href="images/tsf.png"/>
   <link rel="stylesheet" type="text/css" href="style.css" />
 <?php
-   if (isset($_REQUEST['cap']) && isset($_REQUEST['org_lat']) && isset($_REQUEST['org_lon'])) {
-     $cap = $_REQUEST['cap'];
-     $org_lat = $_REQUEST['org_lat'];
-     $org_lon = $_REQUEST['org_lon'];
-     $complete = true;
-   } else {
-     $complete = false;
-   }
-$pt_comment = 'Le point de départ';
+if (isset($_REQUEST['cap']) && isset($_REQUEST['org_lat']) && isset($_REQUEST['org_lon'])) {
+  $cap = $_REQUEST['cap'];
+  $org_lat = $_REQUEST['org_lat'];
+  $org_lon = $_REQUEST['org_lon'];
+  $complete = true;
+} else {
+  $complete = false;
+}
+if (isset($_REQUEST['title'])) {
+  $pt_comment = htmlspecialchars($_REQUEST['title']);
+} else {
+  $pt_comment = 'Le point de départ';
+}
 if ($complete) {
   echo <<< EOS
     <script>
@@ -39,30 +43,30 @@ if ($complete) {
   icon_shiftX: -12,
   icon_shiftY: -24,
   title: 'chez nous'
-  };
+};
 
-  var ref_line = {
-  lon1: $org_lon,
-  lat1: $org_lat,
-  cap: $cap,
-  width: 2,
-  length: 120000,
-  color: '#F00'
-  };
-  </script>
-  <script src="http://openlayers.org/api/OpenLayers.js"></script>
-  <script src="js/utils_osm.js"></script>
+var ref_line = {
+ lon1: $org_lon,
+ lat1: $org_lat,
+ cap: $cap,
+ width: 2,
+ length: 120000,
+ color: '#F00'
+};
+</script>
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script src="js/utils_osm.js"></script>
 EOS;
- }
+}
 ?>
 </head>
 <body>
 <?php
 if ($complete) {
   echo '<div id="map"></div>'."\n";
- } else {
+} else {
   echo "<h1>Il faut indiquer des coordonnées.</h1>\n";
- }
+}
 ?>
 </body>
 </html>
