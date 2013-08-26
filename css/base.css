@@ -46,6 +46,7 @@ h2 {
     font-weight:bold;
     color:#F00;
 }
+
 #pano-list li {
     list-style-type:circle;
     list-style-position:inside;
@@ -91,6 +92,11 @@ footer {
     padding:0.2em 0.3em;
     text-shadow: 0.1em 0.05em 0.15em #444; 
     background-color:#fff;
+}
+
+form li {
+    padding:1em;
+    list-style-type:none;
 }
 
 .validators a {

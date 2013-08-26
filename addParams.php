@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
    <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
-   <link rel="stylesheet" media="screen" href="css/index_style.css" />
+   <link rel="stylesheet" media="screen" href="css/base.css" />
    <title>Positionnerment dun panoramique</title>
 <?php
    // tableau de vérification de conformité

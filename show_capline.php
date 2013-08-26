@@ -2,7 +2,7 @@
   <title>Visualisation axe horizontal sur OSM</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link type="image/x-icon" rel="shortcut icon" href="images/tsf.png"/>
-  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="map.css" />
 <?php
 if (isset($_REQUEST['cap']) && isset($_REQUEST['org_lat']) && isset($_REQUEST['org_lon'])) {
   $cap = $_REQUEST['cap'];
@@ -17,11 +17,18 @@ if (isset($_REQUEST['title'])) {
 } else {
   $pt_comment = 'Le point de départ';
 }
+if (isset($_REQUEST['dist'])) {
+  $dist = $_REQUEST['dist'];
+} else {
+  $dist = 120000;
+}
 if ($complete) {
   echo <<< EOS
+<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
     <script>
     zoom = 12;
-  var get_lon_lat = false;
+  var get_lon_lat = true;
   var scale_line = true;
 
   var def_points_style = {
@@ -50,11 +57,29 @@ var ref_line = {
  lat1: $org_lat,
  cap: $cap,
  width: 2,
- length: 120000,
+ length: $dist,
  color: '#F00'
 };
+var base_layers = [
+		   new OpenLayers.Layer.OSM(),
+		   new OpenLayers.Layer.Google(
+					       "Google Satellite",
+  {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
+					       ),
+		   new OpenLayers.Layer.Google(
+					       "Google Physical",
+  {type: google.maps.MapTypeId.TERRAIN, visibility: false}
+					       ),
+		   new OpenLayers.Layer.Google(
+					       "Google Streets",
+  {numZoomLevels: 20, visibility: false}
+					       ),
+		   new OpenLayers.Layer.Google(
+					       "Google Hybrid",
+  {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 22, visibility: false}
+					       )];
+
 </script>
-<script src="http://openlayers.org/api/OpenLayers.js"></script>
 <script src="js/utils_osm.js"></script>
 EOS;
 }

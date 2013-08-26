@@ -122,6 +122,9 @@ function draw_image(ox, oy) {
 	}
     }
     drawDecorations(ox, oy);
+    var cap_ele = zm.get_cap_ele(last.x, last.y);
+    angle_control.value = cap_ele.cap.toFixed(2);
+    elvtn_control.value = cap_ele.ele.toFixed(2);
 }
 
 function draw_tile_del(ref, idx, tx, ty, ox, oy, twidth, theight) {
@@ -162,13 +165,6 @@ function drawDecorations(ox, oy, tx, ty, twidth, theight) {
 	}
     }
 
-    //cntext.font = "20pt Arial";
-    //cntext.fillRect(0, 0, 200, 20);
-    //cntext.fillStyle = "rgb(255,0,0)";
-    //cntext.fillText(od.toFixed(2), 5, 20);
-    //for (i=0; i<canvas.width/wgrd; i++) {
-	//cntext.strokeRect(i*wgrd, 0, wgrd, 20);
-    //}
     if (twidth) {
 	cntext.restore();
     }
@@ -464,10 +460,10 @@ function tzoom(zv) {
 		    dpix  = this.im.width - this.ref_pixels[this.ref_pixels.length-1].x + this.ref_pixels[1].x;
 		    delt = this.ref_pixels[this.ref_pixels.length-1].shift_y - this.ref_pixels[1].shift_y;
 		}
-		this.ref_pixels[0].dshft_y = delt/dpix;
+		this.ref_pixels[0].dshft_y = -delt/dpix;
 		this.ref_pixels[ord_pts.length].dshft_y = this.ref_pixels[0].dshft_y;
 		dpix = this.im.width - this.ref_pixels[ord_pts.length].x;
-		this.ref_pixels[0].shift_y = this.ref_pixels[ord_pts.length].shift_y - dpix*this.ref_pixels[0].dshft_y;
+		this.ref_pixels[0].shift_y = this.ref_pixels[ord_pts.length].shift_y + dpix*this.ref_pixels[0].dshft_y;
 	    } else {
 		this.ref_pixels[0].shift_y = this.ref_pixels[1].shift_y;
 		this.ref_pixels[0].dshft_y = 0;

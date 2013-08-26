@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
     <title>Liste des panoramas</title>
-    <link rel="stylesheet" media="screen" href="css/index_style.css"/>
+    <link rel="stylesheet" media="screen" href="css/base.css"/>
   </head>
   <body>
     <header>

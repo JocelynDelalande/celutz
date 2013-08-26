@@ -1,6 +1,6 @@
 <?php
 $ref_points = array (
-                     'Marc' => array(43.60568, 1.42841, 170),
+                     'Marc' => array(43.60570, 1.42846, 170),
                      'FF2' => array(43.67737, 1.45077, 140),
 		     'Clocher de Saint-Sernin' => array(43.6085, 1.4424, 214),
 		     'Clocher des Minimes' => array(43.61811, 1.43639, 192),
@@ -22,5 +22,6 @@ $ref_points = array (
 		     "Cheminée du sang de serp" => array(43.62494, 1.42202, 170),
 		     "Château d'eau de blagnac" => array(43.62443, 1.39547, 170),
 		     "Château d'eau de fenouillet" => array(43.67984, 1.39290,170),
+		     "Château d'eau d'Aucamville" => array(43.66759, 1.42796, 170),
 		     "Tour du boulevard de Genève" => array(43.617408, 1.419533, 163),
 		     );

@@ -24,7 +24,17 @@ function draw_map() {
 	map.addControl(new OpenLayers.Control.ScaleLine({bottomOutUnits: ''}));
     }
 
-    map.addLayer(new OpenLayers.Layer.OSM());
+    if (typeof base_layers != 'undefined') {
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	for (var i = 0; i < base_layers.length; i++) {
+	    map.addLayer(base_layers[i]);
+	    if (base_layers[i].type == google.maps.MapTypeId.SATELLITE) {
+		base_layers[i].mapObject.setTilt(0);
+	    }
+	}
+    } else {
+	map.addLayer(new OpenLayers.Layer.OSM());
+    }
 
     if (typeof contour != 'undefined') contours = [contour];
     if (typeof contours == 'undefined') contours = new Array;
@@ -51,6 +61,46 @@ function draw_map() {
 	    }
 	});
 	map.addLayer(cntr);
+    }
+
+    if (typeof ref_line != 'undefined') ref_lines = [ref_line];
+    if (typeof ref_lines != 'undefined') {
+	if (typeof def_line_style == 'undefined') def_line_style = {};
+	var def_ln = {
+	    width:       def_line_style.width? def_line_style.width:2,
+	    color:       def_line_style.color? def_line_style.color:'#00F',
+	    length:      def_line_style.length? def_line_style.length:20000,
+	    opacity:     def_line_style.opacity? def_line_style.opacity:1}
+	
+	var lineLayer = new OpenLayers.Layer.Vector("ref_lines"); 
+	map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));                                     
+	for (var i = 0; i < ref_lines.length; i++) {
+	    var ln = ref_lines[i];
+	    if(isNaN(ln.cap)) {
+		var pt = {lon: ln.lon2, lat: ln.lat2};
+	    } else {
+		var LonLat = new OpenLayers.LonLat(ln.lon1, ln.lat1);
+		var dist = ln.length? ln.length:def_ln.length;
+		var pt = OpenLayers.Util.destinationVincenty(LonLat, ln.cap, dist);
+	    }
+	    var points = new Array(
+		new OpenLayers.Geometry.Point(ln.lon1, ln.lat1),
+		new OpenLayers.Geometry.Point(pt.lon, pt.lat)
+	    );
+	    points[0].transform("EPSG:4326", map.getProjectionObject());
+	    points[1].transform("EPSG:4326", map.getProjectionObject());
+	    var line = new OpenLayers.Geometry.LineString(points);
+
+	    var style = { 
+		strokeColor:   ln.color? ln.color:def_ln.color, 
+		strokeWidth:   ln.width? ln.width:def_ln.width,
+		strokeOpacity: ln.width? ln.opacity:def_ln.opacity
+	    };
+
+	    var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+	    lineLayer.addFeatures([lineFeature]);
+	}
+	map.addLayer(lineLayer);                    
     }
 
     if (typeof ref_point != 'undefined') ref_points = [ref_point];
@@ -114,51 +164,11 @@ function draw_map() {
 	}
 	if (typeof zoom == 'undefined') map.zoomToExtent(refpts_layer.getDataExtent());
     }
-
-    if (typeof ref_line != 'undefined') ref_lines = [ref_line];
-    if (typeof ref_lines != 'undefined') {
-	if (typeof def_line_style == 'undefined') def_line_style = {};
-	var def_ln = {
-	    width:       def_line_style.width? def_line_style.width:2,
-	    color:       def_line_style.color? def_line_style.color:'#00F',
-	    length:      def_line_style.length? def_line_style.length:20000,
-	    opacity:     def_line_style.opacity? def_line_style.opacity:1}
-	
-	var lineLayer = new OpenLayers.Layer.Vector("ref_lines"); 
-	map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));                                     
-	for (var i = 0; i < ref_lines.length; i++) {
-	    var ln = ref_lines[i];
-	    if(isNaN(ln.cap)) {
-		var pt = {lon: ln.lon2, lat: ln.lat2};
-	    } else {
-		var LonLat = new OpenLayers.LonLat(ln.lon1, ln.lat1);
-		var dist = ln.length? ln.length:def_ln.length;
-		var pt = OpenLayers.Util.destinationVincenty(LonLat, ln.cap, dist);
-	    }
-	    var points = new Array(
-		new OpenLayers.Geometry.Point(ln.lon1, ln.lat1),
-		new OpenLayers.Geometry.Point(pt.lon, pt.lat)
-	    );
-	    points[0].transform("EPSG:4326", map.getProjectionObject());
-	    points[1].transform("EPSG:4326", map.getProjectionObject());
-	    var line = new OpenLayers.Geometry.LineString(points);
-
-	    var style = { 
-		strokeColor:   ln.color? ln.color:def_ln.color, 
-		strokeWidth:   ln.width? ln.width:def_ln.width,
-		strokeOpacity: ln.width? ln.opacity:def_ln.opacity
-	    };
-
-	    var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
-	    lineLayer.addFeatures([lineFeature]);
-	}
-	map.addLayer(lineLayer);                    
-    }
     if (typeof get_lon_lat != 'undefined' && get_lon_lat) {
 	map.events.register("click", map, function(e) {
 	    var position = map.getLonLatFromViewPortPx(e.xy);
 	    position.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
-	    alert(position.lon.toFixed(3) + ', ' + position.lat.toFixed(3));
+	    alert(position.lat.toFixed(5) + ', ' + position.lon.toFixed(5));
 	});
     }
 }
