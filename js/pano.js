@@ -7,11 +7,7 @@ if (cap == undefined) var cap = 0;
 if (cap_min == undefined) var cap_min = cap;
 if (cap_max == undefined) var cap_max = cap_min+360;
 if (ref_points == undefined) var ref_points = new Array();
-if (image_loop == undefined) var image_loop = true;
-
-var pt_alt;
-var pt_lat;
-var pt_lon;
+if (image_loop == undefined) var image_loop = false;
 
 var debug_mode = false;
 var canvas;
@@ -122,7 +118,7 @@ function draw_image(ox, oy) {
 	}
     }
     drawDecorations(ox, oy);
-    var cap_ele = zm.get_cap_ele(last.x, last.y);
+    var cap_ele = zm.get_cap_ele(last.x, zm.im.height/2-last.y);
     angle_control.value = cap_ele.cap.toFixed(2);
     elvtn_control.value = cap_ele.ele.toFixed(2);
 }
@@ -173,6 +169,10 @@ function drawDecorations(ox, oy, tx, ty, twidth, theight) {
 
 function insert_drawn_point(lat, lon, alt) {
     var rt = 6371;  // Rayon de la terre
+    var pt_alt = document.getElementById('pos_alt').childNodes[0].nodeValue;
+    var pt_lat = document.getElementById('pos_lat').childNodes[0].nodeValue;
+    var pt_lon = document.getElementById('pos_lon').childNodes[0].nodeValue;
+
     var alt1 = pt_alt;
     var lat1 = pt_lat*Math.PI/180;
     var lon1 = pt_lon*Math.PI/180;
@@ -726,7 +726,11 @@ function manage_ref_points(e) {
     do_delete.onclick = function() {delete_ref_point(insrt)};
     do_insert.onclick = function() {insert_ref_point(insrt, e.pageX-canvas_pos.x, e.pageY-canvas_pos.y)};
     var res = zm.get_cap_ele(pos_x, zm.im.height/2 - pos_y);
-    show_cap.onclick = function() {window.open('show_capline.php?title='+encodeURIComponent(title)+'&cap='+res.cap+'&org_lat='+pt_lat+'&org_lon='+pt_lon)};
+    var pt_lat = document.getElementById('pos_lat').childNodes[0].nodeValue;
+    var pt_lon = document.getElementById('pos_lon').childNodes[0].nodeValue;
+    show_cap.onclick = function() {
+	window.open('show_capline.php?title='+encodeURIComponent(btoa(title))+'&cap='+res.cap+'&org_lat='+pt_lat+'&org_lon='+pt_lon+'&dist=120000');
+    };
     return false;
 }
 
@@ -817,11 +821,7 @@ function paramOut(e) {
  
 }
 
-window.onload = function() {	
-    pt_alt = document.getElementById('pos_alt').childNodes[0].nodeValue;
-    pt_lat = document.getElementById('pos_lat').childNodes[0].nodeValue;
-    pt_lon = document.getElementById('pos_lon').childNodes[0].nodeValue;
-
+window.onload = function() {
     localisation = document.getElementById("locadraw");
     adding = document.getElementById("adding");
     canvas = document.getElementById("mon-canvas");

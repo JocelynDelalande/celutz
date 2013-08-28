@@ -13,7 +13,7 @@ if (isset($_REQUEST['cap']) && isset($_REQUEST['org_lat']) && isset($_REQUEST['o
   $complete = false;
 }
 if (isset($_REQUEST['title'])) {
-  $pt_comment = htmlspecialchars($_REQUEST['title']);
+  $pt_comment = htmlentities(base64_decode($_REQUEST['title']), ENT_QUOTES);
 } else {
   $pt_comment = 'Le point de départ';
 }
