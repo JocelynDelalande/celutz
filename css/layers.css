@@ -1,0 +1,56 @@
+#panel {
+    position:absolute;
+    top: 0;
+    z-index:100000;
+    right: 0;
+    height: 1em; 
+    width: 10em;
+}
+#panel div { 
+    float: left;
+    margin: 0.5em;
+}
+
+#position {
+    z-index:100000;
+    position:absolute;
+    left:40%;
+    top:0;
+    background-color:#000;
+    padding:0 0.5em;
+    border-radius: 0 0 0.5em 0.5em;
+    color:#FC0;
+    font-size: 120%;
+}
+
+.lebouton {
+    z-index:100000;
+    position:absolute;
+    left:10%;
+    top:0;
+    width:2em;
+    height:2em;
+    background-color:#F00;
+}
+
+#extra {
+    background-color:#F00;
+    padding:0 1em;
+}
+
+#extra input {
+    padding:0 1em;
+    vertical-align:middle;
+}
+
+#extra label {
+    margin:0;
+    padding:0;
+    display:block;
+    text-align:left;
+}
+
+#controls {
+    background-color:#F0F;
+    padding:1em;
+}

@@ -11,7 +11,7 @@ function draw_map() {
 	    zcontrol = new OpenLayers.Control.Zoom();
 	}
     } else zcontrol = new OpenLayers.Control.Zoom();
-
+    
     var map = new OpenLayers.Map({
 	div: "map",
         zoom: typeof zoom == 'undefined' ? 10:zoom,
@@ -19,19 +19,70 @@ function draw_map() {
 		  new OpenLayers.Control.KeyboardDefaults(),
 		  new OpenLayers.Control.Navigation()],
     });
-
+    
     if (typeof scale_line != 'undefined' && scale_line == true) {
 	map.addControl(new OpenLayers.Control.ScaleLine({bottomOutUnits: ''}));
     }
-
+    
     if (typeof base_layers != 'undefined') {
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	var layers = new OpenLayers.Control.LayerSwitcher();
+	map.addControl(layers);
 	for (var i = 0; i < base_layers.length; i++) {
 	    map.addLayer(base_layers[i]);
-	    if (base_layers[i].type == google.maps.MapTypeId.SATELLITE) {
-		base_layers[i].mapObject.setTilt(0);
+	}
+	
+	// gestion du 45° google //
+	function update_tilt() {
+	    for (var i = 0; i < base_layers.length; i++) {
+		if (base_layers[i].type == google.maps.MapTypeId.SATELLITE) {
+		    base_layers[i].mapObject.setTilt(this.checked?1:0);
+		    //alert((chkbx.checked?1:0)+'//'+i);
+		    base_layers[i].removeMap;
+		    base_layers[i].redraw;
+		}
 	    }
 	}
+	document.getElementById("tilt").onchange = update_tilt;
+	// fin de gestion du 45° google //
+	
+	// autres tests
+	function show_pos(e) {
+	    alert(formatLonlats(map.getLonLatFromViewPortPx(e.xy)));
+	}
+	function set_pos(e) {
+	    if(this.checked) {
+		document.getElementById("position").style.display = 'none';
+		map.events.register("click", map, show_pos);
+	    } else {
+		document.getElementById("position").style.display = 'block';
+		map.events.unregister("click", map, show_pos);
+	    }
+	}
+	var panel = new OpenLayers.Control.Panel({
+	    div: document.getElementById("panel")
+	});
+	
+	function formatLonlats(lonLat) {
+	    lonLat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+            var lat = lonLat.lat;
+            var lon = lonLat.lon;
+	    var dist = OpenLayers.Util.distVincenty(lonLat, new OpenLayers.LonLat(ln.lon1, ln.lat1))*1000;
+            return lat.toFixed(5) + ', ' + lon.toFixed(5) + ' à ' + parseInt(dist) + ' mètres';
+	}
+	
+	map.addControl (new OpenLayers.Control.MousePosition({
+	    div: document.getElementById("position"),
+	    formatOutput: formatLonlats
+	}));
+
+	var history = new OpenLayers.Control.NavigationHistory();
+	map.addControl(history);
+	panel.addControls([history.next, history.previous]);
+	map.addControl(panel);
+
+	document.getElementById("clic_pos").onchange = set_pos;
+	layers.layersDiv.appendChild(document.getElementById("extra"));
+	// fin des autres tests
     } else {
 	map.addLayer(new OpenLayers.Layer.OSM());
     }

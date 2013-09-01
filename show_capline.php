@@ -2,7 +2,7 @@
   <title>Visualisation axe horizontal sur OSM</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link type="image/x-icon" rel="shortcut icon" href="images/tsf.png"/>
-  <link rel="stylesheet" type="text/css" href="map.css" />
+  <link rel="stylesheet" type="text/css" href="css/layers.css" />
 <?php
 if (isset($_REQUEST['cap']) && isset($_REQUEST['org_lat']) && isset($_REQUEST['org_lon'])) {
   $cap = $_REQUEST['cap'];
@@ -28,7 +28,7 @@ if ($complete) {
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
     <script>
     zoom = 12;
-  var get_lon_lat = true;
+  var get_lon_lat = false;
   var scale_line = true;
 
   var def_points_style = {
@@ -67,11 +67,11 @@ var base_layers = [
   {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
 					       ),
 		   new OpenLayers.Layer.Google(
-					       "Google Physical",
+					       "Google Relief",
   {type: google.maps.MapTypeId.TERRAIN, visibility: false}
 					       ),
 		   new OpenLayers.Layer.Google(
-					       "Google Streets",
+					       "Google plan",
   {numZoomLevels: 20, visibility: false}
 					       ),
 		   new OpenLayers.Layer.Google(
@@ -89,6 +89,13 @@ EOS;
 <?php
 if ($complete) {
   echo '<div id="map"></div>'."\n";
+  echo '<div id="panel"></div>'."\n";
+  echo '<div id="position"></div>'."\n";
+  echo '<div id="extra">'."\n";
+  echo '<p>Autres contrôles'."\n";
+  echo '<label><input type="checkbox" id="tilt" checked="checked"/>vision à 45°</label>'."\n";
+  echo '<label><input type="checkbox" id="clic_pos"/>Position afichée sur clic</label>'."\n";
+  echo '</div>'."\n";
 } else {
   echo "<h1>Il faut indiquer des coordonnées.</h1>\n";
 }

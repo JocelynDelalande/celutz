@@ -488,7 +488,7 @@ function tzoom(zv) {
 		    }
 		    res.innerHTML += '</ul><p>test sur : '+tx0+','+ty0+'</p>';
 		    var tst = this.get_cap_ele(tx0, ty0);
-		    res.innerHTML += '<p>cap:'+tst.cap+', shift:'+tst.ele+'</p>';
+		    res.innerHTML += '<p>cap:'+tst.cap+', ele:'+tst.ele+'</p>';
 		    var tst2 = this.get_pos_xy(tst.cap, tst.ele);
 		    res.innerHTML += '</ul><p>x:'+tst2.x+', y:'+tst2.y+'</p>';
 		}
