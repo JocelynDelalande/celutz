@@ -17,7 +17,9 @@ if (isset($_GET['name'])) {
   $panos_dir = 'tiles';
   $pano_dest = $panos_dir.'/'.$pano_basename;
   if (! is_dir($panos_dir)) {
-    echo "<p class=\"error\">le répertoire \"$panos_dir\" n'est pas accessible</p>\n";
+    if (! mkdir($panos_dir)) {
+        echo "<p class=\"error\">le répertoire \"$panos_dir\" n'est pas accessible et ne peut être créé</p>\n";
+    }
   } else if (file_exists($pano_dest)) {
     echo "<p class=\"error\">le nom de répertoire \"$pano_dest\" est déjà pris</p>\n";
   } else {
