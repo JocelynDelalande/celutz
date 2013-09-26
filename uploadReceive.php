@@ -9,6 +9,12 @@
  
 $dest_dir ='upload';
 
+if (! is_dir($dest_dir)) {
+    if (! mkdir($dest_dir)) {
+        $message = 'Dossier "'.$dest_dir.'" non inscriptible ou inexistant.';
+    }
+}
+
 if(!empty($_POST) && !empty($_FILES)) {
   foreach (array_keys($_FILES['files']['name']) as $i) {
     if(!empty($_FILES['files']['name'][$i])) {
