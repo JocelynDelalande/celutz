@@ -702,7 +702,7 @@ function hide_contextmenu() {
     document.getElementById('insert').style.display = 'none';
 }
 
-function manage_ref_points(e, has_points) {
+function manage_ref_points(e) {
     //event.preventDefault();
     //event.stopPropagation();
 	var sel_pt = document.getElementById('sel_point');
@@ -719,7 +719,7 @@ function manage_ref_points(e, has_points) {
 	insrt.style.top = e.pageY+'px';
 	insrt.style.display = 'block';
 
-	if (has_points) {
+	if (do_insert) {// true if there are ref points
 		    for(var i = 0; i < zm.pt_list.length; i++) {
 			    if (zm.pt_list[i]['type'] == 'ref_point') {
 				    if (check_prox(zm.pt_list[i]['xc']-pos_x,
