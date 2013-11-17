@@ -15,20 +15,20 @@
   <label class="form_col" title="L'altitude positive Ex: 170">Altitude :
     <input  name="loca_altitude" type="number" min="-400" id="loca_altitude"/></label>
   <div class="answer">
-    <input type="button" value="Localiser" id="loca_button"/> 
+    <input type="button" value="Localiser" id="loca_button"/>
     <input type="button" value="Effacer" id="loca_erase"/>
   </div>
 </fieldset>
 EO_FORM_EXTPOINT;
 
    $form_param = <<<'EO_FORM_PARAM'
-<div id="addParams">		
-  <label id="paramFormShow">Paramétrer le panorama</label>	
+<div id="addParams">
+  <label id="paramFormShow">Paramétrer le panorama</label>
 </div>
      <form action="addParams.php?param_dir=%s&amp;param_panorama=%s" id="form_param" method="post">
   <fieldset id="adding"><legend id="paramFormHide">Paramétrage du panorama</legend>
     <label title="Au moins 4 caractères">Titre :
-      <input type="text" pattern="^.{1,40}$" name="param_title" placeholder="%s" 
+      <input type="text" pattern="^.{1,40}$" name="param_title" placeholder="%s"
 	     title="ne doit pas contenir pus de 40 caractères" required=""/></label>
     <label title="La latitude ϵ [-90°, 90°]. Ex : 46.55257">Latitude :
       <input name="param_latitude" type="number" min="-90" max="90" placeholder="43.56" required="" step="any"/></label>
@@ -38,9 +38,9 @@ EO_FORM_EXTPOINT;
       <input name="param_altitude" type="number" min="-400" required="" placeholder="170" step="any"/></label>
     <label title="L'image fait-elle 360° ?">Rebouclage :
       <input type="checkbox" name="param_loop" value="true"></label>
-    
+
     <div>
-      <input type="submit" value="Submit"/> 
+      <input type="submit" value="Submit"/>
       <input type="reset" value="Reset"/>
     </div>
   </fieldset>
@@ -110,8 +110,11 @@ EO_FORM_PARAM;
        printf('point_list[%d] = new Array("%s", %03lf, %03lf, %03lf, "%s");'."\n", $ipt++, $prm['titre'], $dist, $cap, $ele, $lnk);
      }
    }
-
-   include 'ref_points.php';
+   $ref_points = array ();
+   $ref_points_filename = 'ref_points.local.php';
+   if (file_exists($ref_points_filename)) {
+     include $ref_points_filename;
+   }
    $extra_names = array();
    $ref_names = array();
    if (is_array($ref_points)) {
@@ -122,7 +125,7 @@ EO_FORM_PARAM;
        printf('point_list[%d] = new Array("%s", %03lf, %03lf, %03lf, "");'."\n", $ipt++, $name, $dist, $cap, $ele);
      }
    }
- 
+
 
    if (isset($params['reference'])) {
      echo "ref_points = new Array();\n";
@@ -134,27 +137,27 @@ EO_FORM_PARAM;
        }
      }
    }
-  
+
    $localLat = (isset($_POST["loca_latitude"])) ? $_POST["loca_latitude"] : NULL;
    $localLon = (isset($_POST["loca_longitude"])) ? $_POST["loca_longitude"] : NULL;
    $localAlt = (isset($_POST["loca_altitude"])) ? $_POST["loca_altitude"] : NULL;
- 
+
    if ($localLat && $localLon && $localAlt) {
      list($localDistance, $localCap, $localEle) = $pt->coordsToCap($localLat, $localLon, $localAlt);
      $n = "point temporaire";
      printf('point_list[%d] = new Array("%s", %03lf, %03lf, %03lf, "temporary");'."\n",$ipt++, $n, $localDistance, $localCap, $localEle);
-   } 
+   }
   ?>
   </script>
   <link type="image/x-icon" rel="shortcut icon" href="images/tsf.png"/>
   <link rel="stylesheet" media="screen" href="css/map.css" />
-  <script src="js/hide_n_showForm.js"></script> 
+  <script src="js/hide_n_showForm.js"></script>
 </head>
 <body>
   <canvas id="mon-canvas">
     Ce message indique que ce navigateur est vétuste car il ne supporte pas <samp>canvas</samp> (IE6, IE7, IE8, ...)
   </canvas>
-  
+
   <fieldset id="control"><legend>contrôle</legend>
       <label>Zoom : <input type="range" min="0" max="2" value="2" id="zoom_ctrl"/></label>
       <label>Cap : <input type="number" min="0" max="360" step="10" value="0" autofocus="" id="angle_ctrl"/></label>
@@ -162,12 +165,12 @@ EO_FORM_PARAM;
   </fieldset>
 
   <?php
-      
+
      if ($params && isset($params['latitude']) && isset($params['longitude'])) {
        print("<div id=\"params\">\n");
        printf ("<p>latitude :   <em><span id=\"pos_lat\">%.5f</span>°</em></p>\n", $params['latitude']);
        printf ("<p>longitude : <em><span id=\"pos_lon\">%.5f</span>°</em></p>\n", $params['longitude']);
-       if (isset($params['altitude'])) printf ("<p>altitude : <em><span id=\"pos_alt\">%d</span> m</em></p>\n", $params['altitude']); 
+       if (isset($params['altitude'])) printf ("<p>altitude : <em><span id=\"pos_alt\">%d</span> m</em></p>\n", $params['altitude']);
        print("</div>\n");
        echo $form_extpoint;
      } elseif ($params == false ) {
@@ -176,19 +179,22 @@ EO_FORM_PARAM;
         printf($form_param, $dir, $name, $name);
      }
      echo '<p id="info"></p>'."\n";
+
+     echo "<p id=\"insert\">";
      if (count($extra_names) > 1) {
-       echo "<p id=\"insert\">\n<select id=\"sel_point\" name=\"known_points\">\n";
+       echo "<select id=\"sel_point\" name=\"known_points\">\n";
        foreach ($extra_names as $nm) {
-	 echo '<option>'.$nm."</option>\n";
+	     echo '<option>'.$nm."</option>\n";
        }
        echo "</select>\n";
        echo "<input type=\"button\" id=\"do-insert\" value=\"insérer\"/>\n";
        echo "<input type=\"button\" id=\"do-delete\" value=\"suppimer\"/>\n";
-       echo "<input type=\"button\" id=\"do-cancel\" value=\"annuler\"/>\n";
        echo "<input type=\"button\" id=\"show-cap\" value=\"visualiser cet axe sur OSM\"/>\n";
-       echo "</p>\n";
+     } else {
+       echo "Pas de point de reférénce connu, lisez le <em>README.md</em> pour en ajouter. \n";
      }
-     
+     echo "<input type=\"button\" id=\"do-cancel\" value=\"annuler\"/>\n";
+     echo "</p>\n";
   ?>
   <p id="res"></p>
   <div class="validators">

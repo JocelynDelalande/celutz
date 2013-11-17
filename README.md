@@ -19,10 +19,17 @@ Features
 * **view on map** for a given LOS between two points/panoramas.
 
 
-Known Limitations
------------------
+Setting up reference points
+----------------------------
 
-* The reference points are hardcoded in ref_points.php
+Reference points are known points you are likely to see from your panoramas,
+they are a visual reference and a way to orientate your panoramas.
+
+By default, there are no *ref_points*, you can create your own *ref_points* list
+or use one of the provided lists.
+
+To get started, copy one of the files from `ref_points` folder in the root
+folder, remane it to `ref_points.local.php` and customize it.
 
 Panorama view
 --------------
@@ -33,8 +40,6 @@ This is the main view, you can pan and scroll a panorama.
 From this view you can use the *Reference points menu*. The reference points
 menu allows you to set the orientation of your panorama by pointing at a known
 location you visualize on the panorama.
-
-
 
 
 ### Mouse interaction for panorama view ###

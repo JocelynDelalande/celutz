@@ -38,11 +38,11 @@ var test = {x:0, y:0, i:100};
 
 
 function nmodulo(val, div) {                // pour obtenir un modulo dans l'espace des nombres naturels N.
-    return Math.floor((val%div+div)%div);   // il y a peut être plus simple, mais en attendant .... 
+    return Math.floor((val%div+div)%div);   // il y a peut être plus simple, mais en attendant ....
 }
 
 function fmodulo(val, div) {                // pour obtenir un modulo dans l'espace des nombres réels positifs.
-    return (val%div+div)%div;               // il y a peut être plus simple, mais en attendant .... 
+    return (val%div+div)%div;               // il y a peut être plus simple, mais en attendant ....
 }
 
 function distort_canvas(p, x, y) {
@@ -64,21 +64,21 @@ function distort_canvas(p, x, y) {
 
 function draw_image(ox, oy) {
     var ref_vals  = {x:last.x, y:last.y, zoom:zoom};
-    ox = nmodulo(ox-canvas.width/2, zm.im.width);        // pour placer l'origine au centre du canvas 
+    ox = nmodulo(ox-canvas.width/2, zm.im.width);        // pour placer l'origine au centre du canvas
     oy = Math.floor(oy-canvas.height/2);                 // pas de rebouclage vertical
 
     cntext.clearRect(0, 0, canvas.width, canvas.height);
     cntext.fillStyle = "rgba(128,128,128,0.8)";
-    
+
     if (canvas.height > zm.im.height) {
 	var fy = Math.floor((oy+canvas.height/2-zm.im.height/2)/(tile.height*zm.ntiles.y))*zm.ntiles.y;
-	if (fy < 0) fy = 0; 
+	if (fy < 0) fy = 0;
 	var ly = fy + zm.ntiles.y;
     } else {
 	var fy = Math.floor(oy/tile.height);
 	var ly = Math.floor((oy+canvas.height+tile.height-1)/tile.height+1);
-	if (fy < 0) fy = 0; 
-	if (ly > zm.ntiles.y) ly = zm.ntiles.y; 
+	if (fy < 0) fy = 0;
+	if (ly > zm.ntiles.y) ly = zm.ntiles.y;
     }
 
     for (var j=fy; j<ly; j++) {
@@ -141,7 +141,7 @@ function drawDecorations(ox, oy, tx, ty, twidth, theight) {
 	cntext.beginPath();
         cntext.rect(tx, ty, twidth, theight);
         cntext.clip();
-    } 
+    }
     var wgrd = zm.im.width/360;
     var od = ((ox+canvas.width/2)/wgrd)%360;
     var el = (zm.im.height/2 - (oy+canvas.height/2))/wgrd;
@@ -164,7 +164,7 @@ function drawDecorations(ox, oy, tx, ty, twidth, theight) {
     if (twidth) {
 	cntext.restore();
     }
-    
+
 }
 
 function insert_drawn_point(lat, lon, alt) {
@@ -179,19 +179,19 @@ function insert_drawn_point(lat, lon, alt) {
     var alt2 = alt;
     var lat2 = lat*Math.PI/180;
     var lon2 = lon*Math.PI/180;
-    
+
     var dLat = lat2-lat1;
-    var dLon = lon2-lon1; 
-   
-    var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.sin(dLon/2)*Math.sin(dLon/2)*Math.cos(lat1)*Math.cos(lat2);  // 
+    var dLon = lon2-lon1;
+
+    var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.sin(dLon/2)*Math.sin(dLon/2)*Math.cos(lat1)*Math.cos(lat2);  //
     var angle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     var d = angle*rt;                    // distance du point en Kms
-   
+
     var y = Math.sin(dLon) * Math.cos(lat2);
     var x = Math.cos(lat1)*Math.sin(lat2) - Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
     var cap = Math.atan2(y,x);                 // cap pour atteindre le point en radians
     var e = Math.atan2((alt2 - alt1)/1000 - d*d/(2*rt),d);  // angle de l'élévation en radians
-    
+
     return {d:d, cap:cap*180/Math.PI, ele:e*180/Math.PI};   // les résultats sont en degrés
 }
 
@@ -216,7 +216,7 @@ function localate_point() {
     display_temp(opt_dce.d, opt_dce.cap, opt_dce.ele);
 }
 
-function display_temp(d,cap,ele) {  
+function display_temp(d,cap,ele) {
     point_list[point_list.length] = new Array("point temporaire", d,cap,ele, "temporary");
     reset_zooms();
     putImage(last.x, last.y);
@@ -226,15 +226,15 @@ function arrayUnset(array, value){
     array.splice(array.indexOf(value), 1);
 }
 
-function erase_point() {	
+function erase_point() {
 	for (var i=0; i<point_list.length; i++) {
 		if(point_list[i][0] == "point temporaire"){
 			arrayUnset(point_list,point_list[i]);
 			loop = erase_point();
-		}	
-	}	
+		}
+	}
 	reset_zooms();
-    putImage(last.x, last.y);   
+    putImage(last.x, last.y);
 }
 
 function get_file_name(x, y, z) { // recherche du fichier correspondant au zoom et à la position
@@ -251,7 +251,7 @@ function get_file_name(x, y, z) { // recherche du fichier correspondant au zoom 
 }
 
 function keys(key) {
-	
+
     hide_links();
     evt = key || event;
     //evt.preventDefault();
@@ -343,7 +343,7 @@ function launchImage(e) {
 }
 
 function putImage(x, y) { // est destiné à permettre l'effet d'amortissement par la mémorisation de la position courante.
-    if (!zm.is_updated) return; 
+    if (!zm.is_updated) return;
     if (x >= zm.im.width) {   // rebouclage horizontal
 	shift.x -= zm.im.width;
 	x -= zm.im.width;
@@ -411,7 +411,7 @@ function tzoom(zv) {
 	ord_pts = ord_pts.sort(tri_ref_points);
 	is_located = i > 1 || image_loop && i > 0;
 
-	var alpha_domain = {start:0, end:360}; 
+	var alpha_domain = {start:0, end:360};
 	this.pixel_y_ratio = this.im.width/360;
 	if (is_located) {
 	    this.ref_pixels = new Array;
@@ -514,11 +514,11 @@ function tzoom(zv) {
 		typ = 'loc_point';
 	    }else if(is_visible && lbl =='point temporaire') {
 	    typ = 'temporary';
-	    
+
 	    } else if(is_visible) {
 		typ = 'pano_point';
 		lnk += '&to_zoom='+this.value;
-	    } 
+	    }
 	    this.pt_list[i]['type'] = typ;
 	    this.pt_list[i]['cap'] = cap;
 	    this.pt_list[i]['ele'] = ele;
@@ -529,7 +529,7 @@ function tzoom(zv) {
 	    this.pt_list[i]['yc'] = Math.floor(this.im.height/2 - rxy.y);
 	}
     }
-    
+
     this.get_tile_size = function(nx, ny) {
 	var res = {width:0, height:0};
 	if (nx == this.ntiles.x-1) res.width = this.last_tile.width;
@@ -538,7 +538,7 @@ function tzoom(zv) {
 	else res.height = this.tile.height;
 	return res;
     }
-    
+
     this.get_cap_ele = function(px, py) {               // recherche d'un cap et d'une élévation à partir d'un pixel X,Y.
 	if (is_located) {
 	    for (var i=0; i < this.ref_pixels.length; i++) {
@@ -555,7 +555,7 @@ function tzoom(zv) {
 	    return {cap:cp, ele:el};
 	}
     }
-    
+
     this.get_pos_xy = function(cap, ele) {                  // recherche des coordonnées pixel à partir d'un cap et d'une élévation.
 	if (is_located) {
 	    var dcap = fmodulo(cap-this.ref_pixels[0].cap, 360);
@@ -591,7 +591,7 @@ function wheel_zoom (event) {
 	zoom_control.value++;
 	change_zoom(zshift.x, zshift.y);
     } else if (event.wheelDelta > 0 && zoom_control.value > zoom_control.min) {
-	zoom_control.value--; 
+	zoom_control.value--;
 	change_zoom(zshift.x, zshift.y);
     }
 }
@@ -637,7 +637,7 @@ function change_angle() {
     putImage(pos_x, pos_y);
 }
 
-function check_prox(x, y, r) {   //verification si un point de coordonnées x, y est bien dans un cercle de rayon r centré en X,Y. 
+function check_prox(x, y, r) {   //verification si un point de coordonnées x, y est bien dans un cercle de rayon r centré en X,Y.
     return Math.sqrt(x*x + y*y) < r;
 }
 
@@ -702,35 +702,43 @@ function hide_contextmenu() {
     document.getElementById('insert').style.display = 'none';
 }
 
-function manage_ref_points(e) {
+function manage_ref_points(e, has_points) {
     //event.preventDefault();
     //event.stopPropagation();
-    var insrt = document.getElementById('insert');
-    document.getElementById('do-cancel').onclick = hide_contextmenu;
-    insrt.style.left = e.pageX+'px';
-    insrt.style.top = e.pageY+'px';
-    insrt.style.display = 'block';
-    var sel_pt = document.getElementById('sel_point');
+	var sel_pt = document.getElementById('sel_point');
     var do_insert = document.getElementById('do-insert');
-    var do_delete = document.getElementById('do-delete');
-    var show_cap = document.getElementById('show-cap');
+	var do_delete = document.getElementById('do-delete');
+	var do_cancel = document.getElementById('do-cancel');
+	var show_cap = document.getElementById('show-cap');
+	var insrt = document.getElementById('insert');
+
     var pos_x = nmodulo(last.x + e.pageX - canvas_pos.x - canvas.width/2, zm.im.width);
-    var pos_y = last.y + e.pageY - canvas_pos.y - canvas.height/2;
-    for(var i = 0; i < zm.pt_list.length; i++) {
-	if (zm.pt_list[i]['type'] == 'ref_point') {
-	    if (check_prox(zm.pt_list[i]['xc']-pos_x, zm.pt_list[i]['yc']-pos_y, 20)) {
-		sel_pt.value = zm.pt_list[i]['label'];
-	    }
+	var pos_y = last.y + e.pageY - canvas_pos.y - canvas.height/2;
+
+	insrt.style.left = e.pageX+'px';
+	insrt.style.top = e.pageY+'px';
+	insrt.style.display = 'block';
+
+	if (has_points) {
+		    for(var i = 0; i < zm.pt_list.length; i++) {
+			    if (zm.pt_list[i]['type'] == 'ref_point') {
+				    if (check_prox(zm.pt_list[i]['xc']-pos_x,
+				                   zm.pt_list[i]['yc']-pos_y, 20)) {
+					    sel_pt.value = zm.pt_list[i]['label'];
+				    }
+			    }
+		    }
+		do_delete.onclick = function() {delete_ref_point(insrt)};
+		do_insert.onclick = function() {insert_ref_point(insrt, e.pageX-canvas_pos.x, e.pageY-canvas_pos.y)};
+		show_cap.onclick = function() {
+			window.open('show_capline.php?title='+encodeURIComponent(btoa(title))+'&cap='+res.cap+'&org_lat='+pt_lat+'&org_lon='+pt_lon+'&dist=120000');
+		};
 	}
-    }
-    do_delete.onclick = function() {delete_ref_point(insrt)};
-    do_insert.onclick = function() {insert_ref_point(insrt, e.pageX-canvas_pos.x, e.pageY-canvas_pos.y)};
+
+	do_cancel.onclick = hide_contextmenu;
     var res = zm.get_cap_ele(pos_x, zm.im.height/2 - pos_y);
     var pt_lat = document.getElementById('pos_lat').childNodes[0].nodeValue;
     var pt_lon = document.getElementById('pos_lon').childNodes[0].nodeValue;
-    show_cap.onclick = function() {
-	window.open('show_capline.php?title='+encodeURIComponent(btoa(title))+'&cap='+res.cap+'&org_lat='+pt_lat+'&org_lon='+pt_lon+'&dist=120000');
-    };
     return false;
 }
 
@@ -794,31 +802,31 @@ canvas_resize = function() {
 }
 
 function paramIn(e) {
-    e = e || window.event; 
-    var relatedTarget = e.relatedTarget || e.fromElement; 
-    
+    e = e || window.event;
+    var relatedTarget = e.relatedTarget || e.fromElement;
+
     while (relatedTarget != adding && relatedTarget.nodeName != 'BODY' && relatedTarget != document && relatedTarget != localisation) {
 	relatedTarget = relatedTarget.parentNode;
     }
-    
+
     if (relatedTarget != adding && relatedTarget != localisation) {
 	document.removeEventListener('keydown', keys, false);
     }
 }
 
 function paramOut(e) {
-	 
-    e = e || window.event; 
-    var relatedTarget = e.relatedTarget || e.toElement; 
- 
+
+    e = e || window.event;
+    var relatedTarget = e.relatedTarget || e.toElement;
+
     while (relatedTarget != adding && relatedTarget.nodeName != 'BODY' && relatedTarget != document && relatedTarget != localisation) {
         relatedTarget = relatedTarget.parentNode;
     }
- 
+
     if (relatedTarget != adding && relatedTarget != localisation) {
     	document.addEventListener('keydown', keys, false);
     }
- 
+
 }
 
 window.onload = function() {
