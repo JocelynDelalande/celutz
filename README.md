@@ -43,7 +43,7 @@ You'll see big colored bubbles :
    the blue ones)
 
 
-Setting up reference points
+Adding reference points
 ----------------------------
 
 Reference points are known points you are likely to see from your panoramas,
@@ -91,3 +91,21 @@ and your target ref_point.
 
 Options and layers selection can be set in the `+` menu. To move from/to the, click
 on *the top-right button*.
+
+
+Known limitations
+------------------
+
+### Saving of ref_points in a panorama  ###
+
+To make the position of ref points within a panorama permanents, you should
+define them when configuring the panorama (see 3. of *Getting
+started*). Otherwise, you have to configure them every time you view the
+panorama.
+
+A workaround is to delete the tiles/<pano name>/<pano name>.params file to get
+prompted for parameters again, but lat/lon/alt are lost again.
+
+### Cannot delete anything from the interface ###
+
+Uploaded images nor panoramas.
