@@ -86,8 +86,7 @@ EOS;
 }
 ?>
 <script>
-if (typeof addLoadEvent == 'function') addLoadEvent(draw_cap_map);
-else window.onload = draw_cap_map;
+window.onload = draw_cap_map;
 </script>
 </head>
 <body>
