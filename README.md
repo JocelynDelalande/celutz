@@ -81,3 +81,13 @@ location you visualize on the panorama.
 * `Pgup`/`Pgdown`: zoom in/out
 * `←`/`↑`/`↓`/`→`: pan the image
 * `Home`/`End`: turn backwards (180°)
+
+
+"Show cap" view
+---------------
+
+In this view, you see a map with your current view point and a ray between it
+and your target ref_point.
+
+Options and layers selection can be set in the `+` menu. To move from/to the, click
+on *the top-right button*.
