@@ -5,47 +5,9 @@
    require 'class/utils.class.php';
    utils::init();
 
-   $form_extpoint = <<<'EO_FORM_EXTPOINT'
-<img src="images/locapoint.svg" id="loca_show" alt="localiser un point" title="pour localiser un point..."/>
-<fieldset id="locadraw"><legend id="loca_hide">Localiser un point</legend>
-  <label class="form_col" title="La latitude ϵ [-90°, 90°]. Ex: 12.55257">Latitude :
-    <input  name="loca_latitude" type="number" min="-90" max="90"  id="loca_latitude"/></label>
-  <label class="form_col" title="La longitude ϵ [-180°, 180°]. Ex: 144.14723">Longitude :
-    <input name="loca_longitude" type="number" min="-180" max="180" id="loca_longitude"/></label>
-  <label class="form_col" title="L'altitude positive Ex: 170">Altitude :
-    <input  name="loca_altitude" type="number" min="-400" id="loca_altitude"/></label>
-  <div class="answer">
-    <input type="button" value="Localiser" id="loca_button"/>
-    <input type="button" value="Effacer" id="loca_erase"/>
-  </div>
-</fieldset>
-EO_FORM_EXTPOINT;
+   $form_extpoint = file_get_contents('html/form_extpoint.html');
 
-   $form_param = <<<'EO_FORM_PARAM'
-<div id="addParams">
-  <label id="paramFormShow">Paramétrer le panorama</label>
-</div>
-     <form action="addParams.php?param_dir=%s&amp;param_panorama=%s" id="form_param" method="post">
-  <fieldset id="adding"><legend id="paramFormHide">Paramétrage du panorama</legend>
-    <label title="Au moins 4 caractères">Titre :
-      <input type="text" pattern="^.{1,40}$" name="param_title" placeholder="%s"
-	     title="ne doit pas contenir pus de 40 caractères" required=""/></label>
-    <label title="La latitude ϵ [-90°, 90°]. Ex : 46.55257">Latitude :
-      <input name="param_latitude" type="number" min="-90" max="90" placeholder="43.56" required="" step="any"/></label>
-    <label title="La longitude ϵ [-180°, 180°]. Ex : 1.45">Longitude :
-      <input name="param_longitude" type="number" min="-180" max="180" placeholder="1.45" required="" step="any"/></label>
-    <label title="L'altitude exprmée en mètres et &gt; -400. Ex : 170">Altitude :
-      <input name="param_altitude" type="number" min="-400" required="" placeholder="170" step="any"/></label>
-    <label title="L'image fait-elle 360° ?">Rebouclage :
-      <input type="checkbox" name="param_loop" value="true"></label>
-
-    <div>
-      <input type="submit" value="Submit"/>
-      <input type="reset" value="Reset"/>
-    </div>
-  </fieldset>
-</form>
-EO_FORM_PARAM;
+   $form_param = file_get_contents('html/form_param.html');
 
    if (isset($_GET['dir']) && isset($_GET['panorama'])) {
      $dir   = $_GET['dir'];
