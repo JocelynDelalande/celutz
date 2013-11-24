@@ -1,4 +1,7 @@
-function draw_map() {
+
+/** Draws the map for the "view this cap" feature
+ */
+function draw_cap_map() {
 
     var zcontrol;
     if (typeof zoom_control != 'undefined') {
@@ -11,7 +14,7 @@ function draw_map() {
 	    zcontrol = new OpenLayers.Control.Zoom();
 	}
     } else zcontrol = new OpenLayers.Control.Zoom();
-    
+
     var map = new OpenLayers.Map({
 	div: "map",
         zoom: typeof zoom == 'undefined' ? 10:zoom,
@@ -19,18 +22,18 @@ function draw_map() {
 		  new OpenLayers.Control.KeyboardDefaults(),
 		  new OpenLayers.Control.Navigation()],
     });
-    
+
     if (typeof scale_line != 'undefined' && scale_line == true) {
 	map.addControl(new OpenLayers.Control.ScaleLine({bottomOutUnits: ''}));
     }
-    
+
     if (typeof base_layers != 'undefined') {
 	var layers = new OpenLayers.Control.LayerSwitcher();
 	map.addControl(layers);
 	for (var i = 0; i < base_layers.length; i++) {
 	    map.addLayer(base_layers[i]);
 	}
-	
+
 	// gestion du 45° google //
 	function update_tilt() {
 	    for (var i = 0; i < base_layers.length; i++) {
@@ -44,7 +47,7 @@ function draw_map() {
 	}
 	document.getElementById("tilt").onchange = update_tilt;
 	// fin de gestion du 45° google //
-	
+
 	// autres tests
 	function show_pos(e) {
 	    alert(formatLonlats(map.getLonLatFromViewPortPx(e.xy)));
@@ -61,7 +64,7 @@ function draw_map() {
 	var panel = new OpenLayers.Control.Panel({
 	    div: document.getElementById("panel")
 	});
-	
+
 	function formatLonlats(lonLat) {
 	    lonLat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
             var lat = lonLat.lat;
@@ -69,7 +72,7 @@ function draw_map() {
 	    var dist = OpenLayers.Util.distVincenty(lonLat, new OpenLayers.LonLat(ln.lon1, ln.lat1))*1000;
             return lat.toFixed(5) + ', ' + lon.toFixed(5) + ' à ' + parseInt(dist) + ' mètres';
 	}
-	
+
 	map.addControl (new OpenLayers.Control.MousePosition({
 	    div: document.getElementById("position"),
 	    formatOutput: formatLonlats
@@ -122,9 +125,9 @@ function draw_map() {
 	    color:       def_line_style.color? def_line_style.color:'#00F',
 	    length:      def_line_style.length? def_line_style.length:20000,
 	    opacity:     def_line_style.opacity? def_line_style.opacity:1}
-	
-	var lineLayer = new OpenLayers.Layer.Vector("ref_lines"); 
-	map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));                                     
+
+	var lineLayer = new OpenLayers.Layer.Vector("ref_lines");
+	map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));
 	for (var i = 0; i < ref_lines.length; i++) {
 	    var ln = ref_lines[i];
 	    if(isNaN(ln.cap)) {
@@ -142,8 +145,8 @@ function draw_map() {
 	    points[1].transform("EPSG:4326", map.getProjectionObject());
 	    var line = new OpenLayers.Geometry.LineString(points);
 
-	    var style = { 
-		strokeColor:   ln.color? ln.color:def_ln.color, 
+	    var style = {
+		strokeColor:   ln.color? ln.color:def_ln.color,
 		strokeWidth:   ln.width? ln.width:def_ln.width,
 		strokeOpacity: ln.width? ln.opacity:def_ln.opacity
 	    };
@@ -151,12 +154,12 @@ function draw_map() {
 	    var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
 	    lineLayer.addFeatures([lineFeature]);
 	}
-	map.addLayer(lineLayer);                    
+	map.addLayer(lineLayer);
     }
 
     if (typeof ref_point != 'undefined') ref_points = [ref_point];
     if (typeof ref_points != 'undefined') {
-	refpts_layer = new OpenLayers.Layer.Vector("ref_points", {projection: "EPSG:4326"}); 
+	refpts_layer = new OpenLayers.Layer.Vector("ref_points", {projection: "EPSG:4326"});
 	var selectMarkerControl = new OpenLayers.Control.SelectFeature(refpts_layer, {
 	    onSelect: function(feature) {
 		var le_popup = new OpenLayers.Popup.FramedCloud("Popup",
@@ -179,10 +182,10 @@ function draw_map() {
 	    toggle: true,
 	});
 	map.addControl(selectMarkerControl);
-	
+
 	selectMarkerControl.activate();
 	map.addLayer(refpts_layer);
-	
+
 
 	if (typeof def_points_style == 'undefined') def_points_style = {};
 	var def_pt = {
@@ -193,7 +196,7 @@ function draw_map() {
 	    icon_shiftX: def_points_style.icon_shiftX ? def_points_style.icon_shiftX:0,
 	    icon_shiftY: def_points_style.icon_shiftY ? def_points_style.icon_shiftY:0,
 	    opacity:     def_points_style.opacity ? def_points_style.opacity:1}
-	
+
 	for (var i = 0; i < ref_points.length; i++) {
 	    var pt = ref_points[i];
             var ptGeo = new OpenLayers.Geometry.Point(pt.lon, pt.lat);
@@ -223,6 +226,3 @@ function draw_map() {
 	});
     }
 }
-
-if (typeof addLoadEvent == 'function') addLoadEvent(draw_map);
-else window.onload = draw_map;

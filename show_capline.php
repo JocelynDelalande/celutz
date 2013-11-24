@@ -80,10 +80,15 @@ var base_layers = [
 					       )];
 
 </script>
-<script src="js/utils_osm.js"></script>
+<script src="js/utils_osm.js">
+</script>
 EOS;
 }
 ?>
+<script>
+if (typeof addLoadEvent == 'function') addLoadEvent(draw_cap_map);
+else window.onload = draw_cap_map;
+</script>
 </head>
 <body>
 <?php
