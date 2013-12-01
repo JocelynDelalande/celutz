@@ -44,6 +44,7 @@
   ?>
   </script>
   <script src="js/pano.js"></script>
+  <script>window.onload = load_pano</script>
   <script>
   <?php
      $zoom_array = $pt->get_magnifications();

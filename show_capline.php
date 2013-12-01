@@ -26,8 +26,7 @@ if ($complete) {
   echo <<< EOS
 <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
-    <script>
-    zoom = 12;
+<script>
   var get_lon_lat = false;
   var scale_line = true;
 
@@ -82,12 +81,15 @@ var base_layers = [
 </script>
 <script src="js/utils_osm.js">
 </script>
+<script src="js/pano.js">
+</script>
+
 EOS;
 }
 ?>
 <script>
 window.onload = function() {
-  var map = draw_cap_map();
+  var map = draw_cap_map(12);//zoom
   all_refpoints = mk_all_refpoints_layer()
   map.addLayer(all_refpoints);
   add_refpoint_control(all_refpoints, map);

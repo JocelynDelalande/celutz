@@ -1,7 +1,7 @@
 
 /** Draws the map for the "view this cap" feature
  */
-function draw_cap_map() {
+function draw_cap_map(zoom) {
 
     var zcontrol;
     if (typeof zoom_control != 'undefined') {

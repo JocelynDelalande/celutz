@@ -829,8 +829,9 @@ function paramOut(e) {
 
 }
 
-window.onload = function() {
-    localisation = document.getElementById("locadraw");
+
+function load_pano() {
+	localisation = document.getElementById("locadraw");
     adding = document.getElementById("adding");
     canvas = document.getElementById("mon-canvas");
     cntext = canvas.getContext("2d");
