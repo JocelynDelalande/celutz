@@ -29,11 +29,13 @@ var speed = {x:0,y:0};
 var canvas_pos = {x:0,y:0};
 var tmt;
 var is_located = false;
-var point_colors = {'pano_point' : '255,128,128',
-		    'ref_point'  : '128,128,255',
-		    'loc_point'  : '128,255,128',
-		    'temporary'  : '255,255,128',
-		    'unlocated'  : '255,255,255'};
+var point_colors = {
+	'pano_point' : '255,128,128', // red
+	'ref_point'  : '128,128,255', // blue
+	'loc_point'  : '128,255,128', // green
+	'temporary'  : '255,255,128', // yellow
+	'unlocated'  : '255,255,255'  // white
+};
 var test = {x:0, y:0, i:100};
 
 

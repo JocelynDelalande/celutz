@@ -229,7 +229,29 @@ function draw_cap_map(zoom) {
 	return map;
 }
 
+function list2css_color(vals) {
+	return "rgb("+vals+")";
+}
+
 function mk_all_refpoints_layer() {
+	// Put the same style as panorama view for points
+	var points_style = new OpenLayers.StyleMap({
+		pointRadius: 10,
+		fillOpacity: 0.5,
+	});
+	
+	var lookup = {};
+	
+	for (var k in  point_colors ) {
+		var css_color = list2css_color(point_colors[k]);
+		lookup[k] = {
+			fillColor: css_color,
+			strokeColor: css_color
+		};
+	}
+	console.log(lookup);
+	points_style.addUniqueValueRules("default", "type", lookup);	
+	
 	var layer = new OpenLayers.Layer.Vector(
 		"Reference points",{
 			projection: new OpenLayers.Projection("EPSG:4326"),
@@ -237,7 +259,8 @@ function mk_all_refpoints_layer() {
 			protocol: new OpenLayers.Protocol.HTTP({
 				url: 'ajax/ref_points.php',
 				format: new OpenLayers.Format.GeoJSON(),
-			})
+			}),
+			styleMap: points_style
 		});
 	return layer;
 }
@@ -262,8 +285,9 @@ function add_refpoint_control(layer, map) {
 				feature.popup.destroy();
 				feature.popup = null;
 			}});
-
+	
 	map.addControl(selectControl);
 	selectControl.activate();
+
 }
 
