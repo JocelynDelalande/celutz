@@ -225,4 +225,45 @@ function draw_cap_map() {
 	    alert(position.lat.toFixed(5) + ', ' + position.lon.toFixed(5));
 	});
     }
+
+	return map;
 }
+
+function mk_all_refpoints_layer() {
+	var layer = new OpenLayers.Layer.Vector(
+		"Reference points",{
+			projection: new OpenLayers.Projection("EPSG:4326"),
+			strategies: [new OpenLayers.Strategy.Fixed()],
+			protocol: new OpenLayers.Protocol.HTTP({
+				url: 'ajax/ref_points.php',
+				format: new OpenLayers.Format.GeoJSON(),
+			})
+		});
+	return layer;
+}
+
+
+function add_refpoint_control(layer, map) {
+	var selectControl ;
+	selectControl = new OpenLayers.Control.SelectFeature(
+		layer,{
+			onSelect:function(feature) {
+				var popup = new OpenLayers.Popup.FramedCloud(
+					feature.attributes.name,
+					feature.geometry.getBounds().getCenterLonLat(),
+					null,
+					"<div>" + feature.attributes.name+"</div>",
+					null, true, function() {selectControl.unselect(feature);});
+				feature.popup = popup;
+				map.addPopup(popup);},
+
+			onUnselect:function(feature) {
+				map.removePopup(feature.popup);
+				feature.popup.destroy();
+				feature.popup = null;
+			}});
+
+	map.addControl(selectControl);
+	selectControl.activate();
+}
+

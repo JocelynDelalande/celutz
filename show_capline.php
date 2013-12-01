@@ -86,7 +86,12 @@ EOS;
 }
 ?>
 <script>
-window.onload = draw_cap_map;
+window.onload = function() {
+  var map = draw_cap_map();
+  all_refpoints = mk_all_refpoints_layer()
+  map.addLayer(all_refpoints);
+  add_refpoint_control(all_refpoints, map);
+}
 </script>
 </head>
 <body>
