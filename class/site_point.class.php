@@ -87,6 +87,6 @@ class site_point {
 
   public function get_url() {
 	  return sprintf('panorama.php?dir=%s&amp;panorama=%s',
-	                 dirname($this->base_dir), $this->get_name());
+	                 'tiles', $this->get_name());
   }
 }

@@ -25,7 +25,7 @@ function ref_point_to_geoJSONFeature($name, $values) {
 
 
 function get_site_points() {
-	$dir = "../tiles";
+	$dir = "../tiles";//FIXME
 	return (new sites_dir($dir))->get_sites();
 }
 
@@ -43,7 +43,9 @@ function site_point_to_geoJSONFeature($sp) {
 	                                 "type" => "Point",
 	                                 "coordinates" => [$lon, $lat]
 	                                 ),
-	             "properties" => array("name" => $name, "type" => 'pano_point')
+	             "properties" => array("name" => $name,
+	                                   "type" => 'pano_point',
+	                                   "view_url"  => $sp->get_url())
 	             );
 }
 

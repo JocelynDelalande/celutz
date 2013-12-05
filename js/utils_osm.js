@@ -266,6 +266,33 @@ function mk_all_refpoints_layer() {
 }
 
 
+function mk_point_cloud(feature) {
+	/* Takes a ref_point or loc_point and makes a dom element to be used as map
+	 * popup
+	 */
+	var div = document.createElement('div');
+	var ul = document.createElement('ul');
+	var title = feature.attributes.name;
+	var desc, link;
+	
+	if (feature.attributes.type == 'pano_point') {
+		desc = 'photo panoramique';
+		link = feature.attributes.view_url;
+	} else {
+		desc = 'point de référence';
+	}
+	div.innerHTML = '<p><strong>'+title+'</strong></p>';
+	ul.innerHTML = '<li>'+desc+'</li>';
+	
+	if (link) {
+		ul.innerHTML += '<li><a href="'+
+			link+'" >Visualiser';
+	}
+	
+	div.appendChild(ul);
+	return div.innerHTML;
+}
+
 function add_refpoint_control(layer, map) {
 	var selectControl ;
 	selectControl = new OpenLayers.Control.SelectFeature(
@@ -275,7 +302,7 @@ function add_refpoint_control(layer, map) {
 					feature.attributes.name,
 					feature.geometry.getBounds().getCenterLonLat(),
 					null,
-					"<div>" + feature.attributes.name+"</div>",
+					mk_point_cloud(feature),
 					null, true, function() {selectControl.unselect(feature);});
 				feature.popup = popup;
 				map.addPopup(popup);},
