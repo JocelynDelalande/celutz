@@ -16,7 +16,7 @@ require 'class/utils.class.php';
 utils::init();
 
 if(isset($_GET['dir']) && is_dir($_GET['dir'])) {
-  $base_dir = $_GET['dir']; 
+  $base_dir = $_GET['dir'];
 } else {
   $base_dir='tiles';
 }
@@ -26,7 +26,7 @@ try {
   $sites_list = $dir->get_sites();
 
   echo "<ul id=\"pano-list\">\n";
-	
+
   foreach($sites_list as $pt) {
     $params = $pt->get_params();
     $pos_file = sprintf('%s/%s', $pt->get_name(), $pt->get_prefix());
@@ -35,12 +35,12 @@ try {
       $title = sprintf(' title="fichier : %s"', $pos_file);
     } else {
       $cmt = sprintf('<samp>%s</samp>', $pos_file);
-      $title = ''; 
+      $title = '';
     }
-    printf ('<li%s><a href="panorama.php?dir=%s&amp;panorama=%s">%s</a></li>'."\n", $title, $base_dir, $pt->get_name(), $cmt);
+    printf ('<li%s><a href="%s">%s</a></li>'."\n", $title, $pt->get_url(), $cmt);
   }
   echo "</ul>\n";
-} catch (Exception $e) {
+  } catch (Exception $e) {
   printf("<h3 class=\"warning\">désolé mais aucun site n'est disponible...</h3>\n");
 }
 ?>
