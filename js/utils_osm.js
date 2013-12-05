@@ -257,7 +257,7 @@ function mk_all_refpoints_layer() {
 			projection: new OpenLayers.Projection("EPSG:4326"),
 			strategies: [new OpenLayers.Strategy.Fixed()],
 			protocol: new OpenLayers.Protocol.HTTP({
-				url: 'ajax/ref_points.php',
+				url: 'ajax/all_points.php',
 				format: new OpenLayers.Format.GeoJSON(),
 			}),
 			styleMap: points_style
