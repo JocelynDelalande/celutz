@@ -15,4 +15,31 @@ abstract class utils {
     set_error_handler('errorToException');
   }
 
+  static public function list_available_panos($base_dir) {
+	  $dir = opendir($base_dir);
+	  $ret = array();
+	  $finfo = finfo_open(FILEINFO_MIME_TYPE); // Retourne le type mime du fichier
+
+	  while(false !== ($filename = readdir($dir))) {
+		  if (!preg_match('/^\.\.?$/', $filename)) {
+			  $ftype = finfo_file($finfo, $base_dir.'/'.$filename);
+			  if (isset($ftype)) {
+				  $pano = array(
+				    'comment' =>  $filename,
+				    'title' => sprintf('fichier de type %s', $ftype)
+				  );
+			  } else {
+				  $pano = array(
+				    'comment' =>  sprintf('<samp>%s</samp>', $filename),
+				    'title' => ''
+				  );
+			  }
+			  $pano['filename'] = $filename;
+			  $ret[] = $pano;
+		  }
+	  }
+	  return $ret;
+  }
 }
+
+?>

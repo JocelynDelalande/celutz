@@ -16,35 +16,26 @@ require 'class/utils.class.php';
 utils::init();
 
 if(isset($_GET['dir']) && is_dir($_GET['dir'])) {
-  $base_dir = $_GET['dir']; 
+  $base_dir = $_GET['dir'];
 } else {
   $base_dir='upload';
 }
 
-try {
-  $finfo = finfo_open(FILEINFO_MIME_TYPE); // Retourne le type mime du fichier
-  $did = opendir($base_dir);
-
+//try {
   echo "<ul id=\"pano-list\">\n";
-	
-  while(false !== ($filename = readdir($did))) {
-    if (!preg_match('/^\.\.?$/', $filename)) {
-	$ftype = finfo_file($finfo, $base_dir.'/'.$filename);
-	if (isset($ftype)) {
-	  $cmt = $filename;
-	  $title = sprintf(' title="fichier de type %s"', $ftype);
-	} else {
-	  $cmt = sprintf('<samp>%s</samp>', $filename);
-	  $title = ''; 
-	}
-	printf ('<li%s><a href="genererPano.php?dir=%s&amp;name=%s">%s</a></li>'."\n", $title, $base_dir, $filename, $cmt);
-      }
+
+
+  $panos = utils::list_available_panos($base_dir);
+  foreach ($panos as $pano) {
+	  printf ('<li title="%s"><a href="genererPano.php?dir=%s&amp;name=%s">%s</a></li>'."\n",
+	          $pano['title'], $base_dir, $pano['filename'], $pano['comment']);
   }
+
   echo "</ul>\n";
   finfo_close($finfo);
-} catch (Exception $e) {
+//} catch (Exception $e) {
   printf("<h3 class=\"warning\">désolé mais aucun site n'est disponible...</h3>\n");
-}
+//}
 ?>
       <p id="interaction">
 	<a href="." title="Revenir à la liste des panoramas">Retour</a>
