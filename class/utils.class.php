@@ -16,6 +16,8 @@ abstract class utils {
   }
 
   static public function list_available_panos($base_dir) {
+	  /** Lists all that can be turned into a panorama
+	   */
 	  $dir = opendir($base_dir);
 	  $ret = array();
 	  $finfo = finfo_open(FILEINFO_MIME_TYPE); // Retourne le type mime du fichier
