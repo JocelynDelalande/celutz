@@ -25,14 +25,14 @@ class site_point {
     }
     closedir($dir_fd);
     if ($this->prefix === false) return false;
-    $this->parse_and_store_params();
+    $this->parse_and_cache_params();
   }
 
-  private function params_path() {
+  public function params_path() {
 	  return $this->base_dir.'/'.$this->prefix.'.params';
   }
 
-  private function parse_and_store_params() {
+  private function parse_and_cache_params() {
     if (is_file($this->params_path())) {
 	    $this->params = @parse_ini_file($this->params_path());
     }
@@ -43,17 +43,32 @@ class site_point {
 	  if (isset($this->params)) {
 		  return $this->params;
 	  } else {
-		  return parse_and_store_params();
+		  return parse_and_cache_params();
+	  }
+  }
+
+  public function save_params() {
+	  $o = '';
+	  $p = $this->get_params();
+	  foreach ($this->get_params() as $k => $v) {
+		  $o.= "$k = $v\n";
+	  }
+	  file_put_contents($this->params_path(), $o);
+  }
+
+  public function set_param($key, $value) {
+	  $p = $this->get_params();
+	  $this->params[$key] = $value;
+	  if ($key == 'titre') {
+		  $this->name = $value;
 	  }
   }
 
   public function has_params(){
 	  $p = $this->get_params();
-	  return (isset($prm['latitude'], $prm['longitude'],
-	                $prm['altitude'], $prm['titre']))
+	  return (isset($p['latitude'], $p['longitude'],
+	                $p['altitude'], $p['titre']));
   }
-   if ($oname != $name && ) {
-
 
   public function get_name() {
     return basename($this->base_dir);
@@ -109,9 +124,13 @@ class site_point {
     return array($d, $cap*180/M_PI, $e*180/M_PI);   // les résultats sont en degrés
   }
 
-  public function get_url() {
-	  return sprintf('panorama.php?dir=%s&amp;panorama=%s',
-	                 'tiles', $this->get_name());
+  public function get_url($cap=false, $ele=false) {
+	  $o = sprintf('panorama.php?dir=%s&panorama=%s',
+	                  PANORAMA_FOLDER, $this->get_name());
+	  if ($cap && $ele) {
+		  $o .= sprintf("&to_cap=%.3f&to_ele=%.3f", $cap, $ele);
+	  }
+	  return $o;
   }
 
   public static function get($name) {

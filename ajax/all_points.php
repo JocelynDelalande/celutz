@@ -24,12 +24,6 @@ function ref_point_to_geoJSONFeature($name, $values) {
 }
 
 
-function get_site_points() {
-	$dir = "../tiles";//FIXME
-	return (new sites_dir($dir))->get_sites();
-}
-
-
 function site_point_to_geoJSONFeature($sp) {
 	$prm = $sp->get_params();
 	$name = $sp->get_name();
@@ -60,7 +54,7 @@ foreach (get_ref_points() as $name => $vals) {
 }
 
 
-foreach(get_site_points() as $site_point) {
+foreach(site_point::get_all() as $site_point) {
 	$json['features'][] = site_point_to_geoJSONFeature($site_point);
 }
 

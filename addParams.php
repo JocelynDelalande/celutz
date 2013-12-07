@@ -1,3 +1,7 @@
+<?php
+require_once('class/site_point.class.php');
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
@@ -6,24 +10,24 @@
    <title>Positionnerment dun panoramique</title>
 <?php
    // tableau de vérification de conformité
- $params = array('title' => array('name' => 'titre', 
+ $params = array('title' => array('name' => 'titre',
 				  'pattern' => '^.{1,50}$',
 				  'required' => true),
-		 'latitude' => array('name' => 'latitude', 
+		 'latitude' => array('name' => 'latitude',
 				     'type' => 'numeric',
 				     'min' => -180,
 				     'max' => 180,
 				     'required' => true),
-		 'longitude' => array('name' => 'longitude', 
+		 'longitude' => array('name' => 'longitude',
 				     'type' => 'numeric',
 				      'min' => -180,
 				      'max' => 180,
 				      'required' => true),
-		 'altitude' => array('name' => 'altitude', 
+		 'altitude' => array('name' => 'altitude',
 				     'type' => 'numeric',
 				     'min' => -400,
 				     'required' => true),
-		 'loop' => array('name' => 'image_loop', 
+		 'loop' => array('name' => 'image_loop',
 				 'type' => 'boolean',
 				 'required' => false),
 		 'dir' => array('required' => true),
@@ -52,52 +56,36 @@ if (isset($values['panorama'])) {
 }
 
 if (count($wrong) == 0) {
-  // On recherche le dossier correspondant au panorama en question
-  $dir_file = "./".$values['dir']."/".$values['panorama'];
-  $dir_open = opendir($dir_file);
-  while (false !== ($file = readdir($dir_open))) {
-    // Si on trouve bien des tuiles
-    if (preg_match('/(.*)_[0-9]+_[0-9]+_[0-9]+\.jpg$/', $file, $reg)) {
-      $prefix = $reg[1];
-      $new_param_file = $prefix.".params";
-      break;   // On sort à la première tuile trouvée
-    }
-  }
-  closedir($dir_open);
-  
+	$pano = site_point::get($values['panorama']);
+
   // On vérifie qu'on a bien créée un nouveau fichier .params et on écrit dedans.
-  if(isset($new_param_file)){
-    $fid = fopen($dir_file."/".$new_param_file,'a+');
-    echo '<p>Les valeurs suivantes sont utilisées.</p>'."\n";
-    echo "<dl>\n";
-    foreach ($values as $k => $v) {
-      echo "$k -$v<br/>\n";
-      if (isset($params[$k]['name'])) {
-	$nm = $params[$k]['name'];
-	if (isset($params[$k]['type']) && $params[$k]['type'] == 'numeric') {
-	  $vf = $v;
-	} else if (isset($params[$k]['type']) && $params[$k]['type'] == 'boolean') {
-	  $vf = $v ? "true" : "false"; 
-	} else {
-	  $vf = "\"$v\"";
+	echo '<p>Les valeurs suivantes sont utilisées.</p>'."\n";
+	echo "<dl>\n";
+	foreach ($values as $k => $v) {
+		if (isset($params[$k]['name'])) {
+			$nm = $params[$k]['name'];
+			if (isset($params[$k]['type']) && $params[$k]['type'] == 'numeric') {
+				$vf = $v;
+			} else if (isset($params[$k]['type']) && $params[$k]['type'] == 'boolean') {
+				$vf = $v ? "true" : "false";
+			} else {
+				$vf = "\"$v\"";
+			}
+			$pano->set_param($nm, $vf);
+			printf("<dt>%s</dt>\n<dd>%s</dd>\n", $nm, $vf);
+		}
 	}
-	fputs($fid, "$nm = $vf\n");
-	printf("<dt>%s</dt>\n<dd>%s</dd>\n", $nm, $vf);
-      }
-    }
-    echo "</dl>\n";
-    fclose($fid);
-    echo '<p class="succes">Paramétrage terminé.</p>'."\n";
-  } else {
-    printf("<p class=\"error\">impossible d'écrire dans le fichier '%s'</p>\n", $dir_file);
-  }
+	$pano->save_params();
+
+	echo "</dl>\n";
+	echo '<p class="succes">Paramétrage terminé.</p>'."\n";
  } else {
-  echo '<p class="error">Les valeurs suivantes sont incorrectes.</p>'."\n";
-  echo "<dl>\n";
-  foreach ($wrong as $k => $v) {
-    printf("<dt>%s</dt>\n<dd>%s</dd>\n", $k, $v);
-  }
-  echo "</dl>\n";
+	echo '<p class="error">Les valeurs suivantes sont incorrectes.</p>'."\n";
+	echo "<dl>\n";
+	foreach ($wrong as $k => $v) {
+		printf("<dt>%s</dt>\n<dd>%s</dd>\n", $k, $v);
+	}
+	echo "</dl>\n";
 }
 printf('<a href="%s">Retour au panorama</a></p>'."\n", $back_url);
 

@@ -12,13 +12,14 @@
     <section id="main">
       <h2>Liste des panoramas</h2>
       <?php
-require 'class/utils.class.php';
+require_once 'class/utils.class.php';
+require_once 'constants.inc.php';
 utils::init();
 
 if(isset($_GET['dir']) && is_dir($_GET['dir'])) {
   $base_dir = $_GET['dir'];
 } else {
-  $base_dir='tiles';
+  $base_dir=PANORAMA_PATH;
 }
 
 $dir = new sites_dir($base_dir);

@@ -7,18 +7,18 @@
 </head>
 
 <?php
-require 'class/utils.class.php';
+require_once 'class/utils.class.php';
+require_once 'constants.inc.php';
 utils::init();
 if (isset($_GET['name'])) {
   $pano_name = $_GET['name'];
   $pano_basename = preg_replace('/\.[^.]+$/', '', $pano_name);
   
   //Partie exécutante du script gen_tiles qui gènere les tuiles à partir d'une image.
-  $panos_dir = 'tiles';
-  $pano_dest = $panos_dir.'/'.$pano_basename;
-  if (! is_dir($panos_dir)) {
-    if (! mkdir($panos_dir)) {
-        echo "<p class=\"error\">le répertoire \"$panos_dir\" n'est pas accessible et ne peut être créé</p>\n";
+  $pano_dest = PANORAMA_PATH.'/'.$pano_basename;
+  if (! is_dir(PANORAMA_PATH)) {
+    if (! mkdir(PANORAMA_PATH)) {
+        echo "<p class=\"error\">le répertoire \"PANORAMA_PATH\" n'est pas accessible et ne peut être créé</p>\n";
     }
   } else if (file_exists($pano_dest)) {
     echo "<p class=\"error\">le nom de répertoire \"$pano_dest\" est déjà pris</p>\n";
@@ -47,7 +47,7 @@ if (isset($_GET['name'])) {
       if (pclose($fp) === 0) {
 	print("<h4><span class=\"success\">Opération réussie</span></h4>\n");
 	printf("<p>Pour acceder directement au panorama <a href=\"panorama.php?dir=%s&amp;panorama=%s\">cliquer ici</a></p>\n", 
-	       $panos_dir, $pano_basename);
+	       PANORAMA_PATH, $pano_basename);
       } else {
 	print("<h4><span class=\"error\">Opération en échec durant l'exécution du script !</span></h4>\n");
       }

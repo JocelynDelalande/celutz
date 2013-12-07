@@ -3,6 +3,7 @@
 <head>
   <?php
    require 'class/utils.class.php';
+   require_once 'constants.inc.php';
    utils::init();
 
    $form_extpoint = file_get_contents('html/form_extpoint.html');
@@ -13,7 +14,7 @@
      $dir   = $_GET['dir'];
      $name  = $_GET['panorama'];
    } else {
-     $dir   = 'tiles';
+     $dir   = PANORAMA_PATH;
      $name  = 'ttn_mediatheque';
    }
    $opt_vals = array();
@@ -48,6 +49,7 @@
   <script>
   <?php
      $zoom_array = $pt->get_magnifications();
+
      foreach($zoom_array as $zoom => $val) {
        echo "zooms[$zoom] = new tzoom($zoom);\n";
        echo "zooms[$zoom].ntiles.x = ".$val['nx'].";\n";
@@ -63,16 +65,17 @@
    $dir_list = new sites_dir($dir);
 
    $ipt = 0;
-   $scrname = getenv('SCRIPT_NAME');
-   foreach($dir_list->get_sites() as $opt) {
+  foreach(site_point::get_all() as $opt) {
      $prm = $opt->get_params();
      $oname = $opt->get_name();
-     if ($oname != $name && $opt->has_params()) {
+     if (($oname != $name) && $opt->has_params()) {
        list($dist, $cap, $ele) = $pt->coordsToCap($prm['latitude'], $prm['longitude'], $prm['altitude']);
-       $lnk = sprintf("%s?dir=%s&panorama=%s&to_cap=%.3f&to_ele=%.3f", $scrname, $dir, $oname, $cap + 180, -$ele);
+       // Looks back at the point from which we come.
+       $lnk = $opt->get_url($cap + 180, -$ele);
        printf('point_list[%d] = new Array("%s", %03lf, %03lf, %03lf, "%s");'."\n", $ipt++, $prm['titre'], $dist, $cap, $ele, $lnk);
      }
    }
+
    $ref_points = array ();
    $ref_points_filename = 'ref_points.local.php';
    if (file_exists($ref_points_filename)) {
