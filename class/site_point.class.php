@@ -1,6 +1,9 @@
 <?php
+require_once(dirname(__FILE__).'/../constants.inc.php');
 class site_point {
-  private $base_dir;
+	/** Defines a point, with a panorama
+	 */
+	private $base_dir;        // dir of tiles for that panorama
   private $name = false;
   private $prefix = false;
   private $params = false;
@@ -15,9 +18,9 @@ class site_point {
     while (false !== ($file = readdir($dir_fd))) {
 
        if (preg_match('/(.*)_[0-9]+_[0-9]+_[0-9]+\.jpg$/', $file, $reg)) {
-	 $this->prefix = $reg[1];
+	       $this->prefix = $reg[1];
 
-	 break;
+	       break;
        }
     }
     closedir($dir_fd);
@@ -43,6 +46,14 @@ class site_point {
 		  return parse_and_store_params();
 	  }
   }
+
+  public function has_params(){
+	  $p = $this->get_params();
+	  return (isset($prm['latitude'], $prm['longitude'],
+	                $prm['altitude'], $prm['titre']))
+  }
+   if ($oname != $name && ) {
+
 
   public function get_name() {
     return basename($this->base_dir);
@@ -101,5 +112,21 @@ class site_point {
   public function get_url() {
 	  return sprintf('panorama.php?dir=%s&amp;panorama=%s',
 	                 'tiles', $this->get_name());
+  }
+
+  public static function get($name) {
+	  /** Instantiate a site_point, given its name
+	   */
+	  $pano_dir = PANORAMA_PATH.'/'.$name;
+	  return new site_point($pano_dir);
+  }
+
+  public static function get_all() {
+	  $panos = array_diff(scandir(PANORAMA_PATH), array('..', '.'));
+	  $pano_instances = array();
+	  foreach ($panos as $pano_name) {
+		  $pano_instances[] = site_point::get($pano_name);
+	  }
+	  return $pano_instances;
   }
 }

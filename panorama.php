@@ -67,7 +67,7 @@
    foreach($dir_list->get_sites() as $opt) {
      $prm = $opt->get_params();
      $oname = $opt->get_name();
-     if ($oname != $name && isset($prm['latitude']) && isset($prm['longitude']) && isset($prm['altitude']) && isset($prm['titre'])) {
+     if ($oname != $name && $opt->has_params()) {
        list($dist, $cap, $ele) = $pt->coordsToCap($prm['latitude'], $prm['longitude'], $prm['altitude']);
        $lnk = sprintf("%s?dir=%s&panorama=%s&to_cap=%.3f&to_ele=%.3f", $scrname, $dir, $oname, $cap + 180, -$ele);
        printf('point_list[%d] = new Array("%s", %03lf, %03lf, %03lf, "%s");'."\n", $ipt++, $prm['titre'], $dist, $cap, $ele, $lnk);
