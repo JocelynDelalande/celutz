@@ -22,14 +22,26 @@ class site_point {
     }
     closedir($dir_fd);
     if ($this->prefix === false) return false;
-    $pfname = $this->base_dir.'/'.$this->prefix.'.params';
-    if (is_file($pfname)) {
-      $this->params = @parse_ini_file($pfname);
+    $this->parse_and_store_params();
+  }
+
+  private function params_path() {
+	  return $this->base_dir.'/'.$this->prefix.'.params';
+  }
+
+  private function parse_and_store_params() {
+    if (is_file($this->params_path())) {
+	    $this->params = @parse_ini_file($this->params_path());
     }
   }
 
   public function get_params() {
-    return $this->params;
+	  // the params are cached
+	  if (isset($this->params)) {
+		  return $this->params;
+	  } else {
+		  return parse_and_store_params();
+	  }
   }
 
   public function get_name() {
@@ -60,11 +72,12 @@ class site_point {
   }
 
   public function coordsToCap($lat, $lon, $alt) {
-    if (!isset($this->params['latitude']) || !isset($this->params['longitude'])) return false;
+    $params = $this->get_params();
+    if (!isset($params['latitude']) || !isset($params['longitude'])) return false;
     $rt = 6371;  // Rayon de la terre
-    $alt1 = isset($this->params['altitude']) ? $this->params['altitude'] : $alt;
-    $lat1 = $this->params['latitude']*M_PI/180;
-    $lon1 = $this->params['longitude']*M_PI/180;
+    $alt1 = isset($params['altitude']) ? $params['altitude'] : $alt;
+    $lat1 = $params['latitude']*M_PI/180;
+    $lon1 = $params['longitude']*M_PI/180;
     $alt2 = $alt;
     $lat2 = $lat * M_PI/180;
     $lon2 = $lon * M_PI/180;
@@ -81,7 +94,7 @@ class site_point {
     $cap = atan2($y, $x);                 // cap pour atteindre le point en radians
 
     $e = atan2(($alt2 - $alt1)/1000 - $d*$d/(2*$rt), $d);  // angle de l'élévation en radians
-    //    printf("%s, %s, %s, %s\n",$lat1, $this->params['latitude'], $lat, $dLat);
+    //    printf("%s, %s, %s, %s\n",$lat1, $params['latitude'], $lat, $dLat);
     return array($d, $cap*180/M_PI, $e*180/M_PI);   // les résultats sont en degrés
   }
 
