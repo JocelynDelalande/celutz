@@ -140,6 +140,27 @@ class site_point {
 	  return new site_point($pano_dir);
   }
 
+
+  public function to_geoJSON() {
+	  $prm = $this->get_params();
+		$name = $this->get_name();
+		$lat = floatval($prm['latitude']);
+		$lon = floatval($prm['longitude']);
+		//$alt = $prm['altitude'];
+		//$title = $prm['titre'];
+
+		return array("type" => "Feature",
+		             "geometry" => array(
+		                                 "type" => "Point",
+		                                 "coordinates" => [$lon, $lat]
+		                                 ),
+		             "properties" => array("name" => $name,
+		                                   "type" => 'pano_point',
+		                                   "view_url"  => $this->get_url())
+		             );
+  }
+
+
   public static function get_all() {
 	  $panos = array_diff(scandir(PANORAMA_PATH), array('..', '.'));
 	  $pano_instances = array();
@@ -148,4 +169,5 @@ class site_point {
 	  }
 	  return $pano_instances;
   }
+
 }

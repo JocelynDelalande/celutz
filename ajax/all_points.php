@@ -1,5 +1,4 @@
 <?php
-require_once('../class/sites_dir.class.php');
 require_once('../class/site_point.class.php');
 
 function get_ref_points() {
@@ -24,26 +23,6 @@ function ref_point_to_geoJSONFeature($name, $values) {
 }
 
 
-function site_point_to_geoJSONFeature($sp) {
-	$prm = $sp->get_params();
-	$name = $sp->get_name();
-	$lat = floatval($prm['latitude']);
-	$lon = floatval($prm['longitude']);
-	//$alt = $prm['altitude'];
-	//$title = $prm['titre'];
-
-	return array("type" => "Feature",
-	             "geometry" => array(
-	                                 "type" => "Point",
-	                                 "coordinates" => [$lon, $lat]
-	                                 ),
-	             "properties" => array("name" => $name,
-	                                   "type" => 'pano_point',
-	                                   "view_url"  => $sp->get_url())
-	             );
-}
-
-
 $json = array(
               "type" => "FeatureCollection",
               "features"=> array()
@@ -55,7 +34,7 @@ foreach (get_ref_points() as $name => $vals) {
 
 
 foreach(site_point::get_all() as $site_point) {
-	$json['features'][] = site_point_to_geoJSONFeature($site_point);
+	$json['features'][] = $site_point->to_geoJSON();
 }
 
 echo json_encode($json);
