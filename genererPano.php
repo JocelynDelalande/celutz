@@ -25,31 +25,31 @@ if (isset($_GET['name'])) {
   } else {
     mkdir($pano_dest);
     $escaped_command = escapeshellcmd('./to_tiles/gen_tiles.sh -p '.$pano_dest.'/'.$pano_basename.' ./upload/'.$pano_name);
-		
+                
     printf("<h2>Exécution de la commande :</h2>\n<p class=\"cmd\"><samp>%s</samp></p>\n<pre>", htmlspecialchars($escaped_command));
     if ($fp = popen($escaped_command, 'r')) {
       while (!feof($fp)) {
-	//set_time_limit (20); 
-	$results = fgets($fp, 4096);
-	if (strlen($results) == 0) {
-	  // stop the browser timing out
-	  flush();
-	} else {
-	  $tok = strtok($results, "\n");
-	  while ($tok !== false) {
-	    echo htmlspecialchars(sprintf("%s\n",$tok))."<br/>";
-	    flush(); 
-	    $tok = strtok("\n");
-	  }
-	}
+        //set_time_limit (20); 
+        $results = fgets($fp, 4096);
+        if (strlen($results) == 0) {
+          // stop the browser timing out
+          flush();
+        } else {
+          $tok = strtok($results, "\n");
+          while ($tok !== false) {
+            echo htmlspecialchars(sprintf("%s\n",$tok))."<br/>";
+            flush(); 
+            $tok = strtok("\n");
+          }
+        }
       }
       print("</pre>\n");
       if (pclose($fp) === 0) {
-	print("<h4><span class=\"success\">Opération réussie</span></h4>\n");
-	printf("<p>Pour acceder directement au panorama <a href=\"panorama.php?dir=%s&amp;panorama=%s\">cliquer ici</a></p>\n", 
-	       PANORAMA_PATH, $pano_basename);
+        print("<h4><span class=\"success\">Opération réussie</span></h4>\n");
+        printf("<p>Pour acceder directement au panorama <a href=\"panorama.php?dir=%s&amp;panorama=%s\">cliquer ici</a></p>\n", 
+               PANORAMA_PATH, $pano_basename);
       } else {
-	print("<h4><span class=\"error\">Opération en échec durant l'exécution du script !</span></h4>\n");
+        print("<h4><span class=\"error\">Opération en échec durant l'exécution du script !</span></h4>\n");
       }
     } else {
       print("<h4><span class=\"error\">Opération en échec à l'ouverture du script !</span></h4>\n");
