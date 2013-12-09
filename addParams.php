@@ -1,17 +1,8 @@
 <?php
 require_once('class/site_point.class.php');
-?>
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-<head>
-   <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
-   <link rel="stylesheet" media="screen" href="css/base.css" />
-   <title>Positionnerment dun panoramique</title>
-
-<?php
    // tableau de vérification de conformité
- $params = array('title' => array('name' => 'titre',
+$params = array('title' => array('name' => 'titre',
 				  'pattern' => '^.{1,50}$',
 				  'required' => true),
 		 'latitude' => array('name' => 'latitude',
@@ -31,8 +22,41 @@ require_once('class/site_point.class.php');
 		 'loop' => array('name' => 'image_loop',
 				 'type' => 'boolean',
 				 'required' => false),
-		 'dir' => array('required' => true),
 		 'panorama' => array('required' => true));
+
+
+class FormValidationError extends Exception {}
+
+function ini_value($k, $v, $params_format) {
+  /** According to the $params global reference table, format the value for
+  storing in an ini file and returns it.
+  */
+  if (isset($params_format[$k]['type']) && $params_format[$k]['type'] == 'numeric') {
+	$ini_val = $v;
+  } else if (isset($params_format[$k]['type']) && $params_format[$k]['type'] == 'boolean') {
+	$ini_val = $v ? "true" : "false";
+  } else { //string
+	$ini_val = "\"$v\"";
+  }
+  return $ini_val;
+}
+
+function is_ini_key($k, $params_format) {
+  /** Do we need to store that information in the params ini file ?
+  */
+  return isset($params_format[$k]['name']);
+}
+
+function ini_key($k, $params_format) {
+  /** For a given form key, returns the key for ini file
+  */
+  if (isset($params_format[$k]['name'])) {
+    return $params_format[$k]['name'];
+  } else {
+    throw (new FormValidationError('"'.$k.'" is an unknown key.'));
+  }
+}
+
 $wrong = array();
 $values = array();
 // vérification de la conformité
@@ -48,33 +72,36 @@ foreach($params as $param => $check) {
     $wrong[$param] = '<em>$tst</em> est un paramètre manquant';
   }
 }
+?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+   <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+   <link rel="stylesheet" media="screen" href="css/base.css" />
+   <title>Positionnerment dun panoramique</title>
 
-
+<?php
 if (count($wrong) == 0) {
-	$pano = site_point::get($values['panorama']);
+  $pano = site_point::get($values['panorama']);
 
   // On vérifie qu'on a bien créée un nouveau fichier .params et on écrit dedans.
-	echo '<p>Les valeurs suivantes sont utilisées.</p>'."\n";
-	echo "<dl>\n";
-	foreach ($values as $k => $v) {
-		if (isset($params[$k]['name'])) {
-			$nm = $params[$k]['name'];
-			if (isset($params[$k]['type']) && $params[$k]['type'] == 'numeric') {
-				$vf = $v;
-			} else if (isset($params[$k]['type']) && $params[$k]['type'] == 'boolean') {
-				$vf = $v ? "true" : "false";
-			} else {
-				$vf = "\"$v\"";
-			}
-			$pano->set_param($nm, $vf);
-			printf("<dt>%s</dt>\n<dd>%s</dd>\n", $nm, $vf);
-		}
-	}
-	$pano->save_params();
+  echo '<p>Les valeurs suivantes sont utilisées.</p>'."\n";
+  echo "<dl>\n";
 
-	echo "</dl>\n";
-	echo '<p class="succes">Paramétrage terminé.</p>'."\n";
-  printf('<a href="%s">Retour au panorama</a></p>'."\n", $panorama->get_url());
+  foreach ($values as $k => $v) {
+    if (is_ini_key($k, $params)) {
+      $storable_key = ini_key($k, $params);
+      $storable_val = ini_value($k, $v, $params);
+
+	  $pano->set_param($storable_key, $storable_val);
+	  printf("<dt>%s</dt>\n<dd>%s</dd>\n", $storable_key, $storable_val);
+    }
+  }
+  $pano->save_params();
+
+  echo "</dl>\n";
+  echo '<p class="succes">Paramétrage terminé.</p>'."\n";
+  printf('<a href="%s">Retour au panorama</a></p>'."\n", $pano->get_url());
 
 
  } else {

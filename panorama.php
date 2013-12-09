@@ -142,7 +142,7 @@
      } elseif ($params == false ) {
      	$dir   = $_GET['dir'];
         $name  = $_GET['panorama'];
-        printf($form_param, $dir, $name, $name);
+        printf($form_param, $name, $name);
      }
      echo '<p id="info"></p>'."\n";
 
