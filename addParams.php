@@ -8,6 +8,7 @@ require_once('class/site_point.class.php');
    <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
    <link rel="stylesheet" media="screen" href="css/base.css" />
    <title>Positionnerment dun panoramique</title>
+
 <?php
    // tableau de vérification de conformité
  $params = array('title' => array('name' => 'titre',
@@ -48,12 +49,6 @@ foreach($params as $param => $check) {
   }
 }
 
-if (isset($values['panorama'])) {
-  $back_url = sprintf('panorama.php?panorama=%s', $values['panorama']);
-  if (isset($values['dir'])) $back_url .= '&amp;dir='. $values['dir'];
-} else {
-  $back_url = '.';
-}
 
 if (count($wrong) == 0) {
 	$pano = site_point::get($values['panorama']);
@@ -79,6 +74,9 @@ if (count($wrong) == 0) {
 
 	echo "</dl>\n";
 	echo '<p class="succes">Paramétrage terminé.</p>'."\n";
+  printf('<a href="%s">Retour au panorama</a></p>'."\n", $panorama->get_url());
+
+
  } else {
 	echo '<p class="error">Les valeurs suivantes sont incorrectes.</p>'."\n";
 	echo "<dl>\n";
@@ -87,7 +85,5 @@ if (count($wrong) == 0) {
 	}
 	echo "</dl>\n";
 }
-printf('<a href="%s">Retour au panorama</a></p>'."\n", $back_url);
-
 ?>
 </html>
