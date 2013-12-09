@@ -1,3 +1,4 @@
+<?php
 $ref_points = array (
                      'Tour de bretagne' => array(47.217611, -1.558167, 120+19.000),
                      'Sillon de bretagne' => array(47.244444, -1.608222, 85+49.000),
@@ -9,3 +10,4 @@ $ref_points = array (
 					 'HITS' => array(47.230965,-1.63146, 12+51), // 3 grands étages
 					 'Cogent' => array(47.20319,-1.55025, 16+10) // 4 grands étages
 					 );
+?>
