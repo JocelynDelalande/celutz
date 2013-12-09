@@ -42,6 +42,12 @@ abstract class utils {
 	  }
 	  return $ret;
   }
+  public static function strip_extension($filename) {
+	  /** Removes the extension from a file name
+	   * @return the stripped name
+	   */
+	  return preg_replace('/\.[^.]+$/', '', $filename);
+  }
 }
 
 ?>

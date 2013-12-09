@@ -18,15 +18,23 @@ class site_point {
 
   public function __construct($dir) {
     // si $dir n'est pas un répertoire il ne s'agit pas d'un panorama.
-	  if (!is_dir($dir)) {
-		  throw new PanoramaFormatException("$dir does not contain a panorama");
-	  }
+	  // if (!is_dir($dir)) {
+	  // 	  throw new PanoramaFormatException("$dir does not contain a panorama");
+	  // }
     $this->base_dir = $dir;
     $this->prefix = basename($dir);
   }
 
   public function params_path() {
 	  return $this->base_dir.'/'.$this->prefix.'.params';
+  }
+
+  public function tiles_path() {
+	  return $this->base_dir;
+  }
+
+  public function tiles_prefix() {
+	  return $this->base_dir.'/'.$this->get_prefix();
   }
 
   private function parse_and_cache_params() {
@@ -82,6 +90,7 @@ class site_point {
 
   public function get_magnifications() {
     $dir_fd = opendir($this->base_dir);
+    $zoom_array = array();
     while (false !== ($file = readdir($dir_fd))) {                // extraction des paramètres de grossissement par le serveur
        //echo $file;
        if (preg_match('/(.*)_([0-9]+)_([0-9]+)_([0-9]+)\.jpg$/', $file, $reg)) {
