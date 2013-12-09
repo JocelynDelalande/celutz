@@ -1,5 +1,12 @@
 <?php
 require_once(dirname(__FILE__).'/../constants.inc.php');
+
+//
+class PanoramaFormatException extends Exception {
+	/** If the files organization is not correct for a panorama, we can't let it go...
+	 */
+}
+
 class site_point {
 	/** Defines a point, with a panorama
 	 */
@@ -11,21 +18,11 @@ class site_point {
 
   public function __construct($dir) {
     // si $dir n'est pas un répertoire il ne s'agit pas d'un panorama.
-    if (!is_dir($dir)) return;
+	  if (!is_dir($dir)) {
+		  throw new PanoramaFormatException("$dir does not contain a panorama");
+	  }
     $this->base_dir = $dir;
-    $dir_fd = opendir($this->base_dir);
-
-    while (false !== ($file = readdir($dir_fd))) {
-
-       if (preg_match('/(.*)_[0-9]+_[0-9]+_[0-9]+\.jpg$/', $file, $reg)) {
-	       $this->prefix = $reg[1];
-
-	       break;
-       }
-    }
-    closedir($dir_fd);
-    if ($this->prefix === false) return false;
-    $this->parse_and_cache_params();
+    $this->prefix = basename($dir);
   }
 
   public function params_path() {
@@ -34,16 +31,21 @@ class site_point {
 
   private function parse_and_cache_params() {
     if (is_file($this->params_path())) {
-	    $this->params = @parse_ini_file($this->params_path());
+	    $params = parse_ini_file($this->params_path());
+	    if ($params) {
+		    $this->params = $params;
+		    return $params;
+	    }
     }
+    return array();
   }
 
   public function get_params() {
 	  // the params are cached
-	  if (isset($this->params)) {
+	  if (isset($this->params) && $this->params) {
 		  return $this->params;
 	  } else {
-		  return parse_and_cache_params();
+		  return $this->parse_and_cache_params();
 	  }
   }
 
@@ -161,11 +163,18 @@ class site_point {
   }
 
 
-  public static function get_all() {
+  public static function get_all($only_with_params=false) {
+	  /**
+	   * @param $only_with_params : filters out the panoramas which are not parametrized
+	   */
 	  $panos = array_diff(scandir(PANORAMA_PATH), array('..', '.'));
 	  $pano_instances = array();
+
 	  foreach ($panos as $pano_name) {
-		  $pano_instances[] = site_point::get($pano_name);
+		  $pano =  site_point::get($pano_name);
+		  if (! $only_with_params || $pano->has_params() ) {
+			  $pano_instances[] = $pano;
+		  }
 	  }
 	  return $pano_instances;
   }

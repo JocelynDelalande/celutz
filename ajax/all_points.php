@@ -33,7 +33,7 @@ foreach (get_ref_points() as $name => $vals) {
 }
 
 
-foreach(site_point::get_all() as $site_point) {
+foreach(site_point::get_all(true) as $site_point) {
 	$json['features'][] = $site_point->to_geoJSON();
 }
 

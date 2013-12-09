@@ -14,6 +14,7 @@
       <?php
 require_once 'class/utils.class.php';
 require_once 'constants.inc.php';
+require_once('class/site_point.class.php');
 utils::init();
 
 if(isset($_GET['dir']) && is_dir($_GET['dir'])) {
@@ -24,7 +25,7 @@ if(isset($_GET['dir']) && is_dir($_GET['dir'])) {
 
 $dir = new sites_dir($base_dir);
 try {
-  $sites_list = $dir->get_sites();
+  $sites_list = site_point::get_all();
 
   echo "<ul id=\"pano-list\">\n";
 
