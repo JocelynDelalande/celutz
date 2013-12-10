@@ -8,19 +8,15 @@ class PanoramaFormatException extends Exception {
 }
 
 class site_point {
-	/** Defines a point, with a panorama
-	 */
-	private $base_dir;        // dir of tiles for that panorama
+  /** Defines a point, with a panorama
+  */
+  private $base_dir;        // dir of tiles for that panorama
   private $name = false;
   private $prefix = false;
   private $params = false;
   private $zooms;
 
   public function __construct($dir) {
-    // si $dir n'est pas un répertoire il ne s'agit pas d'un panorama.
-	  // if (!is_dir($dir)) {
-	  // 	  throw new PanoramaFormatException("$dir does not contain a panorama");
-	  // }
     $this->base_dir = $dir;
     $this->prefix = basename($dir);
   }
