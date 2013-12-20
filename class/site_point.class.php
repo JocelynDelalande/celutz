@@ -16,6 +16,8 @@ class site_point {
   private $params = false;
   private $zooms;
 
+  public static $REF_KEY = 'reference';
+
   public function __construct($dir) {
     $this->base_dir = $dir;
     $this->prefix = basename($dir);
@@ -57,7 +59,15 @@ class site_point {
 	  $o = '';
 	  $p = $this->get_params();
 	  foreach ($this->get_params() as $k => $v) {
-		  $o.= "$k = $v\n";
+		  if ($k == self::$REF_KEY) {
+			  foreach ($v as $refk => $refv) {
+				  $o.= sprintf("%s[\"%s\"] = %.5f,%.5f\n",
+				               self::$REF_KEY, $refk,
+				               $refv[0], $refv[1]);
+			  }
+		  } else {
+			  $o.= "$k = $v\n";
+		  }
 	  }
 	  file_put_contents($this->params_path(), $o);
   }
@@ -138,6 +148,27 @@ class site_point {
 		  $o .= sprintf("&to_cap=%.3f&to_ele=%.3f", $cap, $ele);
 	  }
 	  return $o;
+  }
+
+  public function set_reference($ref_point, $x, $y) {
+	  /**
+	   * Registers (for saving) the position of a reference point within a
+	   * panorama. It sets or overwrite a reference.
+	   *
+	   * @param $ref_point a RefPoint instance
+	   * @param $x the relative x position of the RefPoint
+	   * @param $x the relative y position of the RefPoint
+	   */
+	  $p = $this->get_params();
+
+	  if (!isset($this->params[self::$REF_KEY]) ||
+	      !is_array($this->params[self::$REF_KEY])) {
+		  $this->params[self::$REF_KEY] = array();
+	  }
+	  $ref_name = $ref_point->name;
+	  $dict = $this->params[self::$REF_KEY];
+	  //$dddd = $this->params[self::$REF_KEY][$ref_name];
+	  $this->params[self::$REF_KEY][$ref_name] = array($x, $y);
   }
 
   public static function get($name) {

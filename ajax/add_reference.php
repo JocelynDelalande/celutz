@@ -6,7 +6,8 @@ require_once('../class/site_point.class.php');
 $fields_spec = array('x'         => array('required', 'numeric', 'positive'),
                      'y'         => array('required', 'numeric', 'positive'),
                      'panorama'  => array('required'),
-                     'ref_point' => array('required'));
+                     'ref_point' => array('required'),
+);
 
 
 $validator = new FormValidator($fields_spec);
@@ -14,15 +15,17 @@ if ($validator->validate($_REQUEST)) {
   $vals = $validator->sane_values();
 
   // temp test code
-  echo '<h1>pano !</h1>';
   $pano = site_point::get($vals['panorama']);
-  var_dump($pano->get_params());
 
-  echo '<h1>ref point !</h1>';
   $ref_point_name = urldecode($vals['ref_point']);
-  var_dump(RefPoint::get($ref_point_name));
+  $ref_point = RefPoint::get($ref_point_name);
+
+  $pano->set_reference($ref_point, $vals['x'], $vals['y']);
+  $pano->save_params();
 
  } else {
+   // Set our response code
+   http_response_code(400);
    echo var_dump($validator->errors());
  }
 
