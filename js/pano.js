@@ -39,6 +39,29 @@ var point_colors = {
 var test = {x:0, y:0, i:100};
 
 
+function getXMLHttpRequest() {
+	var xhr = null;
+	
+	if (window.XMLHttpRequest || window.ActiveXObject) {
+		if (window.ActiveXObject) {
+			try {
+				xhr = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch(e) {
+				xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		} else {
+			xhr = new XMLHttpRequest(); 
+		}
+	} else {
+		alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
+		return null;
+	}
+	
+	return xhr;
+}
+
+
+
 function nmodulo(val, div) {                // pour obtenir un modulo dans l'espace des nombres naturels N.
     return Math.floor((val%div+div)%div);   // il y a peut être plus simple, mais en attendant ....
 }
@@ -251,6 +274,15 @@ function get_file_name(x, y, z) { // recherche du fichier correspondant au zoom 
     fname += '.jpg';
     return fname;
 }
+
+function get_base_name() {
+	/** 
+	 * @returns the base name, which is the name (not path) of the folder where
+	 * the tiles are.
+	 */
+	return img_prefix.split('/').reverse()[0];
+}
+
 
 function keys(key) {
 
@@ -745,13 +777,13 @@ function manage_ref_points(e) {
 }
 
 function insert_ref_point(el, x, y) {
-    var label;
+	var label, posx, posy;
     el.style.display = 'none';
     for(var i = 0; i < zm.pt_list.length; i++) {
 	label = zm.pt_list[i]['label'];
 	if(label == document.getElementById('sel_point').value) {
-	    var posx = nmodulo(last.x + x - canvas.width/2, zm.im.width)/zm.im.width;
-	    var posy = 0.5 - (last.y + y - canvas.height/2)/zm.im.height;
+	    posx = nmodulo(last.x + x - canvas.width/2, zm.im.width)/zm.im.width;
+	    posy = 0.5 - (last.y + y - canvas.height/2)/zm.im.height;
 	    var pval = {x:posx, y:posy, cap:zm.pt_list[i]['cap'], ele:zm.pt_list[i]['ele'], label:label};
 	    ref_points[label] = pval;
 	    document.getElementById('res').innerHTML = '<h4>Dernier point entré</h4>';
@@ -761,7 +793,15 @@ function insert_ref_point(el, x, y) {
 	    break;
 	}
     }
-    show_result();
+	show_result();
+	
+	// Then push the modif
+	var xhr = getXMLHttpRequest();
+	xhr.open("POST", "ajax/add_reference.php", true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send("ref_point="+encodeURIComponent(label)
+	         +"&panorama="+encodeURIComponent(get_base_name())
+	         +"&x="+posx+"&y="+posy);
 }
 
 function show_result(clear_before) {
@@ -776,11 +816,19 @@ function show_result(clear_before) {
 }
 
 function delete_ref_point(el) {
+	var ref_name = document.getElementById('sel_point').value;
     el.style.display = 'none';
-    delete ref_points[document.getElementById('sel_point').value];
+    delete ref_points[ref_name];
     reset_zooms();
     putImage(last.x, last.y);
-    show_result(true);
+	show_result(true);
+	
+	// Then push the modif
+	var xhr = getXMLHttpRequest();
+	xhr.open("POST", "ajax/rm_reference.php", true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send("ref_point="+encodeURIComponent(ref_name)
+	         +"&panorama="+encodeURIComponent(get_base_name()));
 }
 
 function clean_canvas_events(e) {
