@@ -4,7 +4,6 @@
   <?php
    require 'class/utils.class.php';
    require_once 'constants.inc.php';
-   utils::init();
 
    $form_extpoint = file_get_contents('html/form_extpoint.html');
 

@@ -15,7 +15,6 @@
 require_once 'class/utils.class.php';
 require_once 'constants.inc.php';
 require_once('class/site_point.class.php');
-utils::init();
 
 if(isset($_GET['dir']) && is_dir($_GET['dir'])) {
   $base_dir = $_GET['dir'];

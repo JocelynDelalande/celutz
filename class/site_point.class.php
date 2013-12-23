@@ -1,7 +1,6 @@
 <?php
 require_once(dirname(__FILE__).'/../constants.inc.php');
 require_once(dirname(__FILE__).'/utils.class.php');
-utils::init();
 //
 class PanoramaFormatException extends Exception {
 	/** If the files organization is not correct for a panorama, we can't let it go...

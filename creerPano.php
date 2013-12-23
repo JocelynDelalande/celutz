@@ -13,7 +13,6 @@
       <h2>Liste des images transformables en panoramas</h2>
       <?php
 require 'class/utils.class.php';
-utils::init();
 
 if(isset($_GET['dir']) && is_dir($_GET['dir'])) {
   $base_dir = $_GET['dir'];
