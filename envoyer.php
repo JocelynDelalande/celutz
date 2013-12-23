@@ -33,7 +33,7 @@
 			<ul>
 			  <li><input type="file" name="files[]" id="file" multiple="multiple"/></li>
 
-			  <li><input type="checkbox" name="loop">Panorama bouclant
+			  <li><input type="checkbox" name="loop" value="true">Panorama bouclant
 			  (360°)</li>
 			</ul>
 		<p class="help">

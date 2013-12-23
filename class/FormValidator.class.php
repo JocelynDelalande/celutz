@@ -40,12 +40,14 @@ class FormValidator {
 						$sanitized_f = $request[$fieldname];
 					}
 				} else {
-					$val = $request[$fieldname];
-					try {
-						$sanitized_f = $this->validate_field($validator, $val);
-					} catch (FieldValidationError $e) {
-						$err = $e->getMessage();
-						break;
+					if (isset($request[$fieldname]) and $request[$fieldname]) {
+						$val = $request[$fieldname];
+						try {
+							$sanitized_f = $this->validate_field($validator, $val);
+						} catch (FieldValidationError $e) {
+							$err = $e->getMessage();
+							break;
+						}
 					}
 				}
 			}
@@ -92,7 +94,7 @@ FormValidator::register(
   'numeric',
   function ($v) {
 	  $sanitized = floatval($v);
-    if ($sanitized === false) {
+	  if (($sanitized === false) || (!is_numeric($v))) {
 	  	throw new FieldValidationError('n\'est pas une valeur numérique');
 	  } else {
 		  return $sanitized;
