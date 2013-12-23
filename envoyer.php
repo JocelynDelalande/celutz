@@ -15,6 +15,13 @@
     <link type="image/x-icon" rel="shortcut icon" href="images/tsf.png"/>
     <link rel="stylesheet" media="screen" href="css/base.css" />
     <title>Envoi d'une image sur le serveur</title>
+    <script src="js/send.js"></script>
+    <script>
+    window.onload = function() {
+      link_file_to_input(document.getElementById('file'), 
+                         document.getElementById('titre'));
+    };
+    </script>
   </head>
   <body id="main_body">
     <header>
@@ -27,22 +34,29 @@
 	  <li>
 
 		  <fieldset>
-			<legend>Envoyer le fichier:</legend>
+			<legend>Fichier image</legend>
 			<input type="hidden" name="APC_UPLOAD_PROGRESS" id="progress_key"
 			value="panoramas"/>
 			<ul>
-			  <li><input type="file" name="files[]" id="file" multiple="multiple"/></li>
-
-			  <li><input type="checkbox" name="loop" value="true">Panorama bouclant
-			  (360°)</li>
-			</ul>
-		<p class="help">
+			  <li><input type="file" name="files[]" id="file" multiple="multiple"/>
+		    <p class="help">
 		  Le fichier à envoyer doit être une image de taille maximale 300 Mo ;
 		  il peut s'agir d'un panorama (par exemple assemblé
-		  avec <a href="http://hugin.sourceforge.net/">hugin</a>), faisant 360°
-		  ou non, ou encore d'une simple photo.
-		</p>
+		  avec <a href="http://hugin.sourceforge.net/">hugin</a>), ou d'une simple photo.
+		    </p>
+</li>
 
+		    <li>
+          <input type="text" name="titre" id="titre" placeholder="Titre" value=""/>
+		<p class="help">Nom d'usage, explicite sur le lieu de prise de vue </p>
+          
+        </li>
+
+			  <li><input type="checkbox" name="loop" value="true"> Panorama bouclant
+			  (360°)
+		      <p class="help">Ne sélectionner cette option que si les bords droite et gauche de l'image coïncident.</p>
+</li>
+			</ul>
 		</fieldset>
 	  </li>
 	  <li>

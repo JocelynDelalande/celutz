@@ -39,7 +39,7 @@ function handle_upload() {
 
 function existant_and_set($list, $keys) {
   /** For HTTP data : keys of $keys are set within $list and they are not empty
-  * or false nor empty
+  * nor false.
   */
   foreach($keys as $key) {
     if (!isset($list[$key]) || !$list[$key]) {
@@ -55,6 +55,7 @@ $fields_spec = array('lat'         => array('numeric', 'positive'),
                      'lon'         => array('numeric', 'positive'),
                      'alt'  => array('numeric', 'positive'),
                      'loop'  => array('boolean'),
+                     'titre'  => array('required'),
 );
 
 $validator = new FormValidator($fields_spec);
@@ -84,7 +85,7 @@ if ($upload_success) {
   $vals = $validator->sane_values();
   // There is no point setting a part of the parameters only ; check that all
   // are present.  
-  if (existant_and_set($vals, array('lat', 'alt', 'lon'))) {
+  if (existant_and_set($vals, array('lat', 'alt', 'lon', 'titre'))) {
     try {
       $panorama = site_point::create($uploaded_filepath);
       $panorama->set_param('titre', 'Sans nom 1');//FIXME
@@ -92,6 +93,7 @@ if ($upload_success) {
       $panorama->set_param('longitude', $vals['lon']);
       $panorama->set_param('altitude',  $vals['alt']);
       $panorama->set_param('image_loop', $vals['loop']);
+      $panorama->set_param('titre', $vals['titre']);
       $panorama->save_params();
       $params_success = true;
     } catch (Exception $e) {

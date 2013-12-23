@@ -12,7 +12,7 @@ require_once 'class/utils.class.php';
 require_once 'class/site_point.class.php';
 require_once 'class/TilesGenerator.php';
 require_once 'constants.inc.php';
-utils::init();
+
 if (isset($_GET['name'])) {
   $image_path = UPLOAD_PATH.'/'.$_GET['name'];
   // We init the panorama with the same name as image.
