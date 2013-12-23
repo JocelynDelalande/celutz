@@ -41,10 +41,12 @@ class site_point {
 	    $params = parse_ini_file($this->params_path());
 	    if ($params) {
 		    $this->params = $params;
-		    foreach ($params[self::$REF_KEY] as $ref => $vals) {
-			    $bits = explode(',',$vals);
-			    $this->params[self::$REF_KEY][$ref] = array(floatval($bits[0]),
-			                                          floatval($bits[1]));
+		    if (isset($params[self::$REF_KEY])) {
+			    foreach ($params[self::$REF_KEY] as $ref => $vals) {
+				    $bits = explode(',',$vals);
+				    $this->params[self::$REF_KEY][$ref] = array(floatval($bits[0]),
+				                                                floatval($bits[1]));
+			    }
 		    }
 		    if (isset($params['image_loop'])) {
 			    $this->params['image_loop'] = (bool)($params['image_loop']);

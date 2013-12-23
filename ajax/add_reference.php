@@ -15,7 +15,7 @@ if ($validator->validate($_REQUEST)) {
   $vals = $validator->sane_values();
 
   // temp test code
-  $pano = site_point::get($vals['panorama']);
+  $pano = site_point::get(urldecode($vals['panorama']));
 
   $ref_point_name = urldecode($vals['ref_point']);
   $ref_point = RefPoint::get($ref_point_name);
