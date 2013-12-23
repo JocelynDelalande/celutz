@@ -63,6 +63,28 @@ abstract class utils {
     }
     return $v;
   }
+
+  public static function get_unique_filepath($path) {
+    /** To handle uploads with same name : for a given path, suffix it with _<n>
+    (keeping trailing extension)
+    * till it find a non-preexistant_path and returns it.
+    */
+    if (file_exists($path)) {
+      $info = pathinfo($path);
+      $extension = $info['extension'];
+      $remain = self::strip_extension($path);
+      $n = 0;
+      do {
+        $n++;
+        $fn = sprintf('%s_%d.%s', $remain, $n, $extension);
+      } while (file_exists($fn));
+      return $fn;
+
+    } else {
+      return $path;
+    }
+  }
+
 }
 
 ?>

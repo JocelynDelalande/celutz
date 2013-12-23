@@ -2,6 +2,7 @@
  
 require_once('class/FormValidator.class.php');
 require_once('class/site_point.class.php');
+require_once('class/utils.class.php');
 require_once('constants.inc.php');
 
 class UploadReceiveError extends Exception {}
@@ -19,7 +20,7 @@ function handle_upload() {
   foreach ($_FILES['files']['name'] as $i => $file) {
     $file_err = $_FILES['files']['error'][$i];
     $file_tmp = $_FILES['files']['tmp_name'][$i];
-    $file_finalpath = UPLOAD_PATH.'/'.basename($file);
+    $file_finalpath = utils::get_unique_filepath(UPLOAD_PATH.'/'.basename($file));
 
     if(!empty($file)) {
       if(isset($file) && UPLOAD_ERR_OK === $file_err) {
