@@ -16,7 +16,7 @@ function ref_point_to_geoJSONFeature($name, $values) {
 	return array("type" => "Feature",
 	             "geometry" => array(
 	                                 "type" => "Point",
-	                                 "coordinates" => [$values[1],$values[0]]
+	                                 "coordinates" => array($values[1],$values[0]);
 	                                 ),
 	             "properties" => array("name" => $name, "type" => 'loc_point')
 	             );

@@ -218,7 +218,7 @@ class site_point {
 		return array("type" => "Feature",
 		             "geometry" => array(
 		                                 "type" => "Point",
-		                                 "coordinates" => [$lon, $lat]
+		                                 "coordinates" => array($lon, $lat)
 		                                 ),
 		             "properties" => array("name" => $name,
 		                                   "type" => 'pano_point',
