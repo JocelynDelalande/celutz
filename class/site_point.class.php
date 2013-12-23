@@ -1,5 +1,6 @@
 <?php
 require_once(dirname(__FILE__).'/../constants.inc.php');
+require_once(dirname(__FILE__).'/utils.class.php');
 
 //
 class PanoramaFormatException extends Exception {
@@ -40,6 +41,14 @@ class site_point {
 	    $params = parse_ini_file($this->params_path());
 	    if ($params) {
 		    $this->params = $params;
+		    foreach ($params[self::$REF_KEY] as $ref => $vals) {
+			    $bits = explode(',',$vals);
+			    $this->params[self::$REF_KEY][$ref] = array(floatval($bits[0]),
+			                                          floatval($bits[1]));
+		    }
+		    if (isset($params['image_loop'])) {
+			    $this->params['image_loop'] = (bool)($params['image_loop']);
+		    }
 		    return $params;
 	    }
     }
@@ -66,7 +75,7 @@ class site_point {
 				               $refv[0], $refv[1]);
 			  }
 		  } else {
-			  $o.= "$k = $v\n";
+			  $o.= "$k = ".utils::php2ini($v)."\n";
 		  }
 	  }
 	  file_put_contents($this->params_path(), $o);
@@ -170,6 +179,23 @@ class site_point {
 	  //$dddd = $this->params[self::$REF_KEY][$ref_name];
 	  $this->params[self::$REF_KEY][$ref_name] = array($x, $y);
   }
+
+  public function unset_reference($ref_point) {
+	  /**
+	   * Unregisters a reference, within a panorama.
+	   * does nothing if the RefPoint is not registered.
+	   *
+	   * @param $ref_point a RefPoint instance
+	   */
+	  $p = $this->get_params();
+	  $ref_name = $ref_point->name;
+	  if (isset($p[self::$REF_KEY]) &&
+	      isset($p[self::$REF_KEY][$ref_name])) {
+		  unset($this->params[self::$REF_KEY][$ref_name]);
+	  }
+  }
+
+
 
   public static function get($name) {
 	  /** Instantiate a site_point, given its name

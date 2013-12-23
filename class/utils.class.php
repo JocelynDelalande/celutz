@@ -48,6 +48,21 @@ abstract class utils {
 	   */
 	  return preg_replace('/\.[^.]+$/', '', $filename);
   }
+
+  public static function php2ini($v) {
+	  /** convert php var to a string representing it in an ini file.
+	   * @return a string, ready to be inserted into a ini file.
+	   */
+    if (is_numeric($v)) {
+      return $v;
+    }
+    $type = gettype($v);
+    switch($type) {
+      case 'boolean': return $v ? "true" : "false";
+      default: return '"'.$v.'"';
+    }
+    return $v;
+  }
 }
 
 ?>
