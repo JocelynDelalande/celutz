@@ -16,16 +16,19 @@ function draw_cap_map(zoom) {
     } else zcontrol = new OpenLayers.Control.Zoom();
 
     var map = new OpenLayers.Map({
-	div: "map",
-        zoom: typeof zoom == 'undefined' ? 10:zoom,
+	    div: "map",
+	    theme: null,
+	    zoom: typeof zoom == 'undefined' ? 10:zoom,
 	controls:[zcontrol,
 		  new OpenLayers.Control.KeyboardDefaults(),
 		  new OpenLayers.Control.Navigation()],
     });
-
+	
+	
     if (typeof scale_line != 'undefined' && scale_line == true) {
 	map.addControl(new OpenLayers.Control.ScaleLine({bottomOutUnits: ''}));
     }
+	map.celutz_addnew = false;
 
     if (typeof base_layers != 'undefined') {
 	var layers = new OpenLayers.Control.LayerSwitcher();
@@ -61,9 +64,25 @@ function draw_cap_map(zoom) {
 		map.events.unregister("click", map, show_pos);
 	    }
 	}
+	    
+	    
+    var bt_pano = mk_new_pano_button(map);
 	var panel = new OpenLayers.Control.Panel({
-	    div: document.getElementById("panel")
-	});
+		div: document.getElementById("panel"),
+    	default: bt_pano,
+        createControlMarkup: function(control) {
+            var button = document.createElement('button'),
+                iconSpan = document.createElement('span'),
+                textSpan = document.createElement('span');
+            iconSpan.innerHTML = '&nbsp;';
+            button.appendChild(iconSpan);
+            if (control.text) {
+                textSpan.innerHTML = control.text;
+            }
+            button.appendChild(textSpan);
+            return button;
+        }
+    });
 
 	function formatLonlats(lonLat) {
 	    lonLat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
@@ -78,9 +97,19 @@ function draw_cap_map(zoom) {
 	    formatOutput: formatLonlats
 	}));
 
-	var history = new OpenLayers.Control.NavigationHistory();
+    var history = new OpenLayers.Control.NavigationHistory({
+	    previousOptions: {
+		    title: "Go to previous map position",
+		    text: "Préc."
+	    },
+	    nextOptions: {
+		    title: "Go to next map position",
+		    text: "Suiv."
+	    },
+    });
+	    
 	map.addControl(history);
-	panel.addControls([history.next, history.previous]);
+	    panel.addControls([bt_pano, history.next, history.previous]);
 	map.addControl(panel);
 
 	document.getElementById("clic_pos").onchange = set_pos;
@@ -315,6 +344,69 @@ function add_refpoint_control(layer, map) {
 	
 	map.addControl(selectControl);
 	selectControl.activate();
+}
 
+
+function mk_new_pano_button(map) {
+	var btn = new OpenLayers.Control.Button({
+		displayClass: 'olControlBtnNewPano',
+		title: "Ajouter un nouveau panorama",
+		text: "Photo",
+		id: 'btn-new-pano',
+		autoActivate: true,
+		trigger: function() {start_add_new_pano(map)},
+	});	
+	return btn;
+}
+
+
+function add_pano_click_handler(callback) {
+	var ctrlClass = OpenLayers.Class(OpenLayers.Control, {                
+		defaultHandlerOptions: {
+		    'single': false,
+		    'double': true,
+		    'pixelTolerance': 0,
+		    'stopSingle': false,
+		    'stopDouble': false
+		},
+
+		initialize: function(options)
+		{
+		    this.handlerOptions = OpenLayers.Util.extend(
+		        {}, this.defaultHandlerOptions
+		    );
+		    
+		    OpenLayers.Control.prototype.initialize.apply(this, arguments);
+		    
+		    this.handler = new OpenLayers.Handler.Click(
+		        this, {
+		            'click': callback
+		        }, this.handlerOptions
+		    );
+		},
+	});
+	
+	var control = new ctrlClass({
+		        handlerOptions: {
+		            "single": true,
+		            "double": false
+		        },
+		autoActivate: true});
+	
+	return control;
+}
+
+function start_add_new_pano(map) {
+	map.celutz_addnew = true;
+	alert("cliquer sur un point de la carte pour choisir l'emplacement");
+	document.body.style.cursor = 'crosshair';
+	
+	var control = add_pano_click_handler(function(evt) {
+		var coord = map.getLonLatFromPixel(evt.xy);
+		coord.transform(new OpenLayers.Projection("EPSG:900913"), 
+		                new OpenLayers.Projection("EPSG:4326"));
+		window.location = 'envoyer.php?lat='+coord.lat+'&lon='+coord.lon;
+	});
+	map.addControl(control);
 }
 

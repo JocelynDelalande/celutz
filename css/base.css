@@ -106,3 +106,13 @@ form li {
 .validators a:hover {
   border-color:#F00;
 }
+
+fieldset {
+	padding: 1em;
+}
+
+.help {
+	margin-top: 1em;
+	font-style: italic;
+	font-size: small;
+}

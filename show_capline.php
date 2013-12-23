@@ -3,6 +3,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link type="image/x-icon" rel="shortcut icon" href="images/tsf.png"/>
   <link rel="stylesheet" type="text/css" href="css/layers.css" />
+  <link rel="stylesheet" type="text/css" href="http://dev.openlayers.org/releases/OpenLayers-2.13.1/theme/default/style.css" />
+  <link rel="stylesheet" type="text/css" href="css/olmap.css" />
+
 <?php
 if (isset($_REQUEST['cap']) && isset($_REQUEST['org_lat']) && isset($_REQUEST['org_lon'])) {
   $cap = $_REQUEST['cap'];

@@ -1,3 +1,13 @@
+<?php
+   if (array_key_exists('lat', $_GET) && array_key_exists('lon', $_GET)) {
+     $lat = $_GET['lat'];
+     $lon = $_GET['lon'];
+   } else {
+     $lat = '';
+     $lon = '';
+   }
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
   <head>
@@ -15,14 +25,38 @@
       <form action="uploadReceive.php" method="post" enctype="multipart/form-data" id="upload">
 	<ul>
 	  <li>
-	    <label for="file" class="description">Envoyer le fichier :</label>
-	    <div>
-	    <input type="hidden" name="APC_UPLOAD_PROGRESS" id="progress_key" value="panoramas"/>
-	    <input type="file" name="files[]" id="file" multiple="multiple"
-		   title="Le fichier à envoyer doit être une image de taille maximale 300 Mo"/>
-	    </div>  
+
+		  <fieldset>
+			<legend>Envoyer le fichier:</legend>
+			<input type="hidden" name="APC_UPLOAD_PROGRESS" id="progress_key"
+			value="panoramas"/>
+			<ul>
+			  <li><input type="file" name="files[]" id="file" multiple="multiple"/></li>
+
+			  <li><input type="checkbox" name="loop">Panorama bouclant
+			  (360°)</li>
+			</ul>
+		<p class="help">
+		  Le fichier à envoyer doit être une image de taille maximale 300 Mo ;
+		  il peut s'agir d'un panorama (par exemple assemblé
+		  avec <a href="http://hugin.sourceforge.net/">hugin</a>), faisant 360°
+		  ou non, ou encore d'une simple photo.
+		</p>
+
+		</fieldset>
 	  </li>
-	  
+	  <li>
+		<fieldset>
+	    <legend>Coordonnées (optionnel)</legend>
+		<input type="text" name="lon" placeholder="longitude" value="<?php echo $lat ?>"/>
+		<input type="text" name="lat" placeholder="latitude" value="<?php echo $lon; ?>"/>
+		<input type="text" name="alt" placeholder="altitude (m)" width="20"/>
+        <p class="help">
+		  Si vous ne spécifiez pas les coordonnées maintenant, il sera
+		  toujours possible de le faire plus tard.
+		</p>
+        </fieldset>
+	  </li>
 	  <li>
 	    <input type="submit" name="submit" value="Envoyer" />
 	  </li>
