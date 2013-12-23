@@ -1,6 +1,7 @@
 <?php
  
 require_once('class/FormValidator.class.php');
+require_once('class/site_point.class.php');
 require_once('constants.inc.php');
 
 class UploadReceiveError extends Exception {}
@@ -23,7 +24,7 @@ function handle_upload() {
     if(!empty($file)) {
       if(isset($file) && UPLOAD_ERR_OK === $file_err) {
 	      move_uploaded_file($file_tmp, $file_finalpath);
-        return sprintf("transfert de %s réalisé",  $file);
+        return $file_finalpath;
       } else {
         throw new UploadReceiveError(
           'Une erreur interne a empêché l\'envoi de l\'image :'. $file_err);
@@ -35,22 +36,38 @@ function handle_upload() {
   }
 }
 
+function existant_and_set($list, $keys) {
+  /** For HTTP data : keys of $keys are set within $list and they are not empty
+  * or false nor empty
+  */
+  foreach($keys as $key) {
+    if (!isset($list[$key]) || !$list[$key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 ////////////////////// main //////////////////////////////////////////
 
-$fields_spec = array('lat'         => array('required', 'numeric', 'positive'),
+$fields_spec = array('lat'         => array('numeric', 'positive'),
                      'lon'         => array('numeric', 'positive'),
-                     'alt'  => array('numeric'),
+                     'alt'  => array('numeric', 'positive'),
+                     'loop'  => array('boolean'),
 );
 
 $validator = new FormValidator($fields_spec);
-$upload_success = false;
 
 ////// STEP 1 : UPLOAD ////////
 
+$upload_success = false;
+$uploaded_filepath = '';
+
 if ($validator->validate($_REQUEST)) {
   try {
-    $message = handle_upload();
+    $uploaded_filepath = handle_upload();
     $upload_success = true;
+    $message = sprintf("transfert de %s réalisé", basename($uploaded_filepath));
   } catch (UploadReceiveError $e) {
     $message = $e->getMessage();
   }
@@ -63,7 +80,23 @@ if ($validator->validate($_REQUEST)) {
 $params_success = false;
 
 if ($upload_success) {
-  //pass
+  $vals = $validator->sane_values();
+  // There is no point setting a part of the parameters only ; check that all
+  // are present.  
+  if (existant_and_set($vals, array('lat', 'alt', 'lon'))) {
+    try {
+      $panorama = site_point::create($uploaded_filepath);
+      $panorama->set_param('titre', 'Sans nom 1');//FIXME
+      $panorama->set_param('latitude',  $vals['lat']);
+      $panorama->set_param('longitude', $vals['lon']);
+      $panorama->set_param('altitude',  $vals['alt']);
+      $panorama->set_param('image_loop', $vals['loop']);
+      $panorama->save_params();
+      $params_success = true;
+    } catch (Exception $e) {
+      $message = 'erreur à la création du panorama : '.$e->getMessage();
+    }
+  }
 }
 
 

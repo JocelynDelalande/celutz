@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(__FILE__).'/../constants.inc.php');
 require_once(dirname(__FILE__).'/utils.class.php');
-
+utils::init();
 //
 class PanoramaFormatException extends Exception {
 	/** If the files organization is not correct for a panorama, we can't let it go...
@@ -206,6 +206,18 @@ class site_point {
 	  return new site_point($pano_dir);
   }
 
+  public static function create($filepath) {
+	  /** creates a new panorama, given its name, from an uploaded file.
+	   */
+	  $name = utils::strip_extension(basename($filepath));
+	  $pano_dir = PANORAMA_PATH.'/'.$name;
+	  $pano = new site_point($pano_dir);
+	  if (!mkdir($pano->tiles_path())) {
+		  return false;
+	  } else {
+		  return $pano;
+	  }
+  }
 
   public function to_geoJSON() {
 	  $prm = $this->get_params();
@@ -229,7 +241,8 @@ class site_point {
 
   public static function get_all($only_with_params=false) {
 	  /**
-	   * @param $only_with_params : filters out the panoramas which are not parametrized
+	   * @param $only_with_params : filters out the panoramas which
+	   *        are not parametrized
 	   */
 	  $panos = array_diff(scandir(PANORAMA_PATH), array('..', '.'));
 	  $pano_instances = array();

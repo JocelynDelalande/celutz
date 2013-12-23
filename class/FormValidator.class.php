@@ -112,5 +112,16 @@ FormValidator::register(
 	  }
   }
 );
+// Intended to validate checkbox which takes NULL for unchecked
+FormValidator::register(
+  'boolean',
+  function ($v) {
+	  if ($v == NULL) {
+		  return false;
+	  } else {
+		  return true;
+	  }
+  }
+);
 
 ?>
