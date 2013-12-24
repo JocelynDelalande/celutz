@@ -62,8 +62,8 @@
 	  <li>
 		<fieldset>
 	    <legend>Coordonnées (optionnel)</legend>
-		<input type="text" name="lon" placeholder="longitude" value="<?php echo $lat ?>"/>
-		<input type="text" name="lat" placeholder="latitude" value="<?php echo $lon; ?>"/>
+		<input type="text" name="lat" placeholder="latitude" value="<?php echo $lat; ?>"/>
+		<input type="text" name="lon" placeholder="longitude" value="<?php echo $lon ?>"/>
 		<input type="text" name="alt" placeholder="altitude (m)" width="20"/>
         <p class="help">
 		  Si vous ne spécifiez pas les coordonnées maintenant, il sera
