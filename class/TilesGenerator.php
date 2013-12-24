@@ -27,12 +27,20 @@ class TilesGenerator {
 			if (! mkdir(PANORAMA_PATH)) {
 				$err = "le répertoire \"PANORAMA_PATH\" n'est pas accessible et ne peut être créé";
 			}
-		} else if (file_exists($pano_path)) {
-			$err = sprintf("le nom de répertoire \"%s\" est déjà pris",
-			               $pano_path);
 		} else {
-			mkdir($pano_path);
-		}
+      if (file_exists($pano_path)) {
+         $pano_files = scandir($pano_path);
+        foreach($pano_files as $filename) {
+          if (preg_match('/.*\.jpg/', $filename)) {
+			      $err = sprintf("\"%s\" contient déjà un découpage de panorama.",
+                           $pano_path);
+            break;
+          }
+        }
+		  } else {
+			  mkdir($pano_path);
+		  }
+    }
 		if ($err) {
 			throw (new TilesGeneratorRightsException($err));
 		}
