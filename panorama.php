@@ -98,7 +98,7 @@
      foreach ($params['reference'] as $nm => $val) {
        if (isset($ref_names[$nm])) {
 	 list($dist, $cap, $ele) = $ref_names[$nm];
-	 list($px, $py) = explode(',', $val);
+	 list($px, $py) = $val;
 	 printf("ref_points[\"%s\"] = {x:%.5f, cap:%.5f, y:%.5f, ele:%.5f};\n", $nm, $px, $cap, $py, $ele);
        }
      }
