@@ -50,7 +50,7 @@ class site_point {
 		    if (isset($params['image_loop'])) {
 			    $this->params['image_loop'] = (bool)($params['image_loop']);
 		    }
-		    return $params;
+		    return $this->params;
 	    }
     }
     return array();
