@@ -35,11 +35,12 @@
   ?>
   <script>
    <?php
-     printf ("var title = \"%s\"\n", $titre);
-     printf ("var img_prefix = '%s/%s'\n", $base_dir, $prefix);
+     printf ("var title = \"%s\";\n", $titre);
+     printf ("var img_prefix = '%s/%s';\n", $base_dir, $prefix);
      if (is_array($params)) $opt_vals = array_merge($params, $opt_vals);
      foreach(array('to_cap', 'to_ele', 'to_zoom', 'image_loop') as $val) {
-        if (isset($opt_vals[$val])) printf ('var '.$val.' = '.$opt_vals[$val].";\n"); // correction du décalage angulaire par rapport au Nord
+        if (isset($opt_vals[$val])) 
+        printf ('var '.$val.' = '.utils::php2ini($opt_vals[$val]).";\n"); // correction du décalage angulaire par rapport au Nord
      }
   ?>
   </script>
