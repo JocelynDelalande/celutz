@@ -38,6 +38,11 @@ if (isset($_GET['name'])) {
     print("<p>Pour acceder à la liste des panoramas <a href=\".\">cliquer ici</a></p>\n") ;
 
 
+    // Redirect in js to sumary page
+    if ($_GET['wizard']) {
+      printf('<script>window.location=\'panoInfo.php?name=%s\'</script>\n', $pano_name);
+    }
+
   } catch (TilesGeneratorRightsException $e) {
     printf("<p class=\"error\">%s</p>\n", $e->getMessage());
   } catch (TilesGeneratorScriptException $e) {

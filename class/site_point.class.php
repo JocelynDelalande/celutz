@@ -96,6 +96,19 @@ class site_point {
 	                $p['altitude'], $p['titre']));
   }
 
+  public function has_tiles(){
+	  if (file_exists($this->tiles_path())) {
+         $pano_files = scandir($this->tiles_path());
+        foreach($pano_files as $filename) {
+          if (preg_match('/.*\.jpg/', $filename)) {
+	          return true;
+          }
+        }
+      } else {
+	      return false;
+      }
+  }
+
   public function get_name() {
     return basename($this->base_dir);
   }
@@ -151,12 +164,45 @@ class site_point {
     return array($d, $cap*180/M_PI, $e*180/M_PI);   // les résultats sont en degrés
   }
 
+  public function get_generate_url($source_file) {
+	  /**
+	   * @param $source_file : the name of the source file within the upload dir.
+	   */
+	  return sprintf('genererPano.php?wizard=1&name='.$source_file);
+  }
+
+  public function src_path(){
+	  /** @returns the basename of the src image, or false if it's no longer available
+	   */
+	  $extensions = array('jpg', 'tif', 'png', 'bmp', 'jpeg', 'pnm',
+	                      'JPG', 'TIF', 'PNG', 'BMP', 'JPEG', 'PNM');
+
+	  foreach ($extensions as $ext) {
+		  $tried_name = sprintf('%s/%s.%s', UPLOAD_PATH, $this->get_name(),$ext);
+		  if (file_exists($tried_name)) {
+			  return $tried_name;
+		  }
+	  }
+	  return false;
+  }
+
   public function get_url($cap=false, $ele=false) {
 	  $o = sprintf('panorama.php?dir=%s&panorama=%s',
 	                  PANORAMA_FOLDER, $this->get_name());
 	  if ($cap && $ele) {
 		  $o .= sprintf("&to_cap=%.3f&to_ele=%.3f", $cap, $ele);
 	  }
+	  return $o;
+  }
+
+  public function get_map_url($cap=0) {
+	  $encoded_title = base64_encode($this->get_name());
+	  $script_name = 'show_capline.php';
+	  $lat = $this->get_params()['latitude'];
+	  $lon = $this->get_params()['longitude'];
+
+	  $o = sprintf('%s?title=%s&cap=%s&org_lat=%.5f&org_lon=%.5f&dist=120000',
+	               $script_name, $encoded_title, $cap, $lat, $lon);
 	  return $o;
   }
 

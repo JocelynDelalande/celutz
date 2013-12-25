@@ -103,6 +103,14 @@ if ($upload_success) {
 }
 
 
+////// STEP 3 : TILES ////////
+
+// We do it in a redirection
+
+if ($upload_success) {
+  utils::relative_redirect(
+    $panorama->get_generate_url(basename($uploaded_filepath)));
+}
 ?>
 
 <!DOCTYPE html>

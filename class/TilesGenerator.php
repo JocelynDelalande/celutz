@@ -29,13 +29,9 @@ class TilesGenerator {
 			}
 		} else {
       if (file_exists($pano_path)) {
-         $pano_files = scandir($pano_path);
-        foreach($pano_files as $filename) {
-          if (preg_match('/.*\.jpg/', $filename)) {
-			      $err = sprintf("\"%s\" contient déjà un découpage de panorama.",
-                           $pano_path);
-            break;
-          }
+        if ($this->panorama->has_tiles()) {
+			    $err = sprintf("\"%s\" contient déjà un découpage de panorama.",
+                         $pano_path);
         }
 		  } else {
 			  mkdir($pano_path);
