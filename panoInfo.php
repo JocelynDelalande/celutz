@@ -1,22 +1,35 @@
 <?php
-require_once 'class/site_point.class.php';
+require_once('class/site_point.class.php');
+require_once('class/FormValidator.class.php');
+
+$fields_spec = array('name' => array('required', 'basename'));
+
+$validator = new FormValidator($fields_spec);
+
+$is_valid = $validator->validate($_GET);
 
 
-$pano = site_point::get($_GET['name']);
 
-if ($pano->has_params()) {
-  $params = $pano->get_params();
-  $title = $params['titre'];
-  $lat = $params['latitude'];
-  $lon = $params['longitude'];
+if ($is_valid) {
+  $input = $validator->sane_values();
+  $pano = site_point::get($input['name']);
+  
+  if ($pano->has_params()) {
+    $params = $pano->get_params();
+    $title = $params['titre'];
+    $lat = $params['latitude'];
+    $lon = $params['longitude'];
+  } else {
+    $title = $input['name'];
+  }
+
+
+  $has_tiles = $pano->has_tiles();//TODO
+  $has_params = $pano->has_params();
+  $src_path = $pano->src_path();
 } else {
-  $title = $__GET['name'];
+  $validation_errors = $validator->errors();
 }
-
-
-$has_tiles = $pano->has_tiles();//TODO
-$has_params = $pano->has_params();
-$src_path = $pano->src_path();
  ?>
 
 <!DOCTYPE html>
@@ -31,6 +44,7 @@ $src_path = $pano->src_path();
       <h1><img src="images/tetaneutral.svg" alt="tetaneutral.net"/></h1>
     </header>
     <section id="main">
+<?php if ($is_valid) { ?>
       <h2><?php echo $title ?></h2>
       <ul id="pano-list">
         <li>
@@ -58,6 +72,9 @@ $src_path = $pano->src_path();
           <?php } ?>
         </li>
       </ul>
+<?php } else { 
+  $validator->print_errors(); 
+}?>
     </section>
     <footer class="validators"><samp>
       page validée par

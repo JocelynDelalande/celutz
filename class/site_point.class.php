@@ -27,6 +27,10 @@ class site_point {
 	  return $this->base_dir.'/'.$this->prefix.'.params';
   }
 
+  public function tiles_url_prefix() {
+	  return PANORAMA_FOLDER.'/'.$this->prefix;
+  }
+
   public function tiles_path() {
 	  return $this->base_dir;
   }

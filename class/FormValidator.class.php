@@ -58,8 +58,7 @@ class FormValidator {
 			}
 		}
 		$this->sanitized = $sanitized;
-
-		return ($err == false);
+		return (count($this->errors) == 0);
 	}
 
 	public function validate_field($validator, $content) {
@@ -81,6 +80,14 @@ class FormValidator {
 
 	public function sane_values() {
 		return $this->sanitized;
+	}
+
+	public function print_errors() {
+		/** raw & quick HTML errors printing, for case that shouldn't happen to users.
+		 */
+		echo '<pre>';
+		var_dump($this->errors());
+		echo '</pre>';
 	}
 
 	public static function register($name, $function) {
@@ -123,5 +130,18 @@ FormValidator::register(
 	  }
   }
 );
+
+// Validate that it is not a file path
+FormValidator::register(
+  'basename',
+  function ($v) {
+	  if (!strpos($v, '/') && !strpos($v, '\\')) {
+		  return $v;
+	  } else {
+		  throw new FieldValidationError('est un chemin');
+	  }
+  }
+);
+
 
 ?>

@@ -1,3 +1,24 @@
+<?php
+require_once 'class/utils.class.php';
+require_once 'class/site_point.class.php';
+require_once 'class/TilesGenerator.php';
+require_once 'constants.inc.php';
+
+
+$fields_spec = array(
+  'name'   => array('required', 'basename'), // name of the field within uploads dir
+  'wizard' => array('boolean')
+);
+
+$validator = new FormValidator($fields_spec);
+$is_valid = $validator->validate($_GET);
+
+if ($is_valid) {
+  $input = $validator->sane_values();
+}
+
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
@@ -7,16 +28,13 @@
 </head>
 
 <body>
-<?php
-require_once 'class/utils.class.php';
-require_once 'class/site_point.class.php';
-require_once 'class/TilesGenerator.php';
-require_once 'constants.inc.php';
 
-if (isset($_GET['name'])) {
-  $image_path = UPLOAD_PATH.'/'.$_GET['name'];
+<?
+
+if ($is_valid) {
+  $image_path = UPLOAD_PATH.'/'.$input['name'];
   // We init the panorama with the same name as image.
-  $pano_name = utils::strip_extension($_GET['name']);
+  $pano_name = utils::strip_extension($input['name']);
   $panorama = site_point::get($pano_name);
 
   $tiles_generator = new TilesGenerator($image_path, $panorama);
@@ -39,7 +57,7 @@ if (isset($_GET['name'])) {
 
 
     // Redirect in js to sumary page
-    if ($_GET['wizard']) {
+    if ($input['wizard']) {
       printf('<script>window.location=\'panoInfo.php?name=%s\'</script>\n', $pano_name);
     }
 
@@ -49,6 +67,8 @@ if (isset($_GET['name'])) {
     printf("<h4><span class=\"error\">%s</span></h4>\n", $e->getMessage());
     print("</pre>\n");
   }
+} else { 
+  $validator->print_errors(); 
 }
 ?>
 </body>

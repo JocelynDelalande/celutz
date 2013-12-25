@@ -5,24 +5,42 @@
    require 'class/utils.class.php';
    require_once 'constants.inc.php';
 
+  $fields_spec = array(
+    'panorama'   => array('basename'),
+    'dir'        => array(),//fixme
+    'to_cap'     => array('numeric'),
+    'to_ele'     => array('numeric'),
+    'to_zoom'     => array('numeric')
+  );
+  
+  $validator = new FormValidator($fields_spec);
+  $is_valid = $validator->validate($_GET);
+  
+  if ($is_valid) {
+    $input = $validator->sane_values();
+  } else {
+    $validator->print_errors();
+    die();//fixme, could be cleaner
+  }
+  
    $form_extpoint = file_get_contents('html/form_extpoint.html');
 
    $form_param = file_get_contents('html/form_param.html');
 
-   if (isset($_GET['dir']) && isset($_GET['panorama'])) {
-     $dir   = $_GET['dir'];
-     $name  = $_GET['panorama'];
+   if (isset($input['dir']) && isset($input['panorama'])) {
+     $dir   = $input['dir'];
+     $name  = $input['panorama'];
    } else {
      $dir   = PANORAMA_PATH;
      $name  = 'ttn_mediatheque';
    }
    $opt_vals = array();
    foreach(array('to_cap', 'to_ele', 'to_zoom') as $val) {
-     if (!empty($_GET[$val])) $opt_vals[$val] = $_GET[$val];
+     if (!empty($input[$val])) $opt_vals[$val] = $input[$val];
    }
 
-   $base_dir = $dir.'/'.$name;
-   $pt = new site_point($base_dir);
+   $pt = site_point::get($input['panorama']);
+   $base_dir = $pt->tiles_url_prefix();
    if(!$pt) die("impossible d'accéder à ".$base_dir." !\n");
    $params = $pt->get_params();
    $prefix = $pt->get_prefix();
@@ -140,8 +158,8 @@
        print("</div>\n");
        echo $form_extpoint;
      } elseif ($params == false ) {
-     	$dir   = $_GET['dir'];
-        $name  = $_GET['panorama'];
+     	$dir   = $input['dir'];
+        $name  = $input['panorama'];
         printf($form_param, $name, $name);
      }
      echo '<p id="info"></p>'."\n";
