@@ -18,7 +18,6 @@ Features
 * **see other panoramas** locations to evaluate the lines-of-sight;
 * **view on map** for a given LOS between two points/panoramas.
 
-
 Getting started : upload a panorama
 -----------------------------------
 
@@ -92,6 +91,16 @@ and your target ref_point.
 Options and layers selection can be set in the `+` menu. To move from/to the, click
 on *the top-right button*.
 
+
+Installing
+----------
+
+You need PHP
+
+- in your php.ini set upload_max_filesize and post_max_size to "100M" or near.
+- in your httpd configuration, set the max post size accordingly
+
+You need imagemagick. On debian : apt-get install imagemagick
 
 Known limitations
 ------------------
