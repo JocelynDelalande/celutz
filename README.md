@@ -56,7 +56,7 @@ To get started, copy one of the files from `ref_points` folder in the root
 folder, remane it to `ref_points.local.php` and customize it.
 
 *Hint: prefer to register the altitudes of the topmost point of a building: they
- are the easire parts to aim from other panoramas.*
+ are the easier parts to aim from other panoramas.*
 
 
 Panorama view
@@ -95,16 +95,6 @@ on *the top-right button*.
 
 Known limitations
 ------------------
-
-### Saving of ref_points in a panorama  ###
-
-To make the position of ref points within a panorama permanents, you should
-define them when configuring the panorama (see 3. of *Getting
-started*). Otherwise, you have to configure them every time you view the
-panorama.
-
-A workaround is to delete the tiles/<pano name>/<pano name>.params file to get
-prompted for parameters again, but lat/lon/alt are lost again.
 
 ### Cannot delete anything from the interface ###
 
