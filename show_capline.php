@@ -1,3 +1,31 @@
+<?php 
+$fields_spec = array(
+  'cap' => array('numeric'),
+  'org_lat' => array('numeric'),
+  'org_lon' => array('numeric'),
+  'dist' => array('numeric'),
+  'title' => array(),
+);
+
+$validator = new FormValidator($fields_spec);
+
+$is_valid = $validator->validate($_GET);
+
+
+if ($is_valid) {
+  $input = $validator->sane_values();
+  if (isset($input['cap'], $input['org_lat'], $input['org_lon'])) {
+    $cap = $input['cap'];
+    $org_lat = $input['org_lat'];
+    $org_lon = $input['org_lon'];
+    $show_capline = true;
+  } else {
+    $show_capline = false;
+  }
+}
+
+ ?>
+
 <head>
   <title>Visualisation axe horizontal sur OSM</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
