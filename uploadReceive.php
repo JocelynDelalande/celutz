@@ -11,6 +11,12 @@ class UploadReceiveError extends Exception {}
 ////////////////////// actions //////////////////////////////////////////
 
 function handle_upload() {
+  $upload_messages = array(
+    UPLOAD_ERR_NO_FILE   => 'pas de fichier envoyé',
+    UPLOAD_ERR_INI_SIZE  => 'fichier trop gros',
+    UPLOAD_ERR_FORM_SIZE => 'fichier trop gros',
+  );
+
   if (! is_dir(UPLOAD_PATH)) {
     if (! mkdir(UPLOAD_PATH)) {
       throw new UploadReceiveError(
@@ -28,7 +34,7 @@ function handle_upload() {
         return $file_finalpath;
       } else {
         throw new UploadReceiveError(
-          'Une erreur interne a empêché l\'envoi de l\'image :'. $file_err);
+          'Une erreur interne a empêché l\'envoi de l\'image :'. $upload_messages[$file_err]);
       }
     } else {
       throw new UploadReceiveError(
@@ -51,8 +57,8 @@ function existant_and_set($list, $keys) {
 
 ////////////////////// main //////////////////////////////////////////
 
-$fields_spec = array('lat'         => array('numeric', 'positive'),
-                     'lon'         => array('numeric', 'positive'),
+$fields_spec = array('lat'         => array('numeric'),
+                     'lon'         => array('numeric'),
                      'alt'  => array('numeric', 'positive'),
                      'loop'  => array('boolean'),
                      'titre'  => array('required'),
